@@ -1,4 +1,4 @@
-# Copyright (c) 2013, Rethink Robotics
+# Copyright (c) 2014, Rethink Robotics
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,18 @@ import os
 import signal
 from subprocess import Popen, PIPE, STDOUT
 
+
 ## Simple function to execute a linux shell command
 #  @param command The bash command to be run
 #  @param quiet Tells the function no to print the output of the command
 #  @param get_output Tells the script to return the output of the command
 def mk_process(command, quiet=False, get_output=False, shell=True):
     if shell == True:
-        process = Popen(command, shell = True, stdout = PIPE,
-                               stderr = STDOUT)
+        process = Popen(command, shell=True, stdout=PIPE,
+                               stderr=STDOUT)
     else:
-        process = Popen(command, shell = False, stdout = PIPE,
-                               stderr = STDOUT)
+        process = Popen(command, shell=False, stdout=PIPE,
+                               stderr=STDOUT)
     stdout, stderr = process.communicate()
     if quiet == False:
         print stdout
@@ -48,15 +49,16 @@ def mk_process(command, quiet=False, get_output=False, shell=True):
     else:
         return process.returncode
 
+
 # Pretty much the same as mk_process, but in a class so that
 #   the user can call the access the process after instantiation
 class RosProcess():
     def __init__(self, command, quiet=True, get_output=False, shell=True):
         if shell == True:
-            self.process = Popen(command, shell=True, stdout=None, 
+            self.process = Popen(command, shell=True, stdout=None,
                                         stdin=PIPE, stderr=STDOUT)
         else:
-            self.process = Popen(command, shell=False, stdout=None, 
+            self.process = Popen(command, shell=False, stdout=None,
                                         stdin=PIPE, stderr=STDOUT)
         self.quiet = quiet
         self.get_output = get_output
@@ -73,11 +75,16 @@ class RosProcess():
         else:
             return self.process.returncode
 
+
 def python_processes():
-    return [p for p in mk_process('ps ax', get_output=True, quiet=True).split('\n') if 'python' in p]
+    return [p for p in mk_process('ps ax',
+                                  get_output=True,
+                                  quiet=True).split('\n') if 'python' in p]
+
 
 def python_proc_ids(proc):
     return [int(p.split()[0]) for p in python_processes() if proc in p]
+
 
 def kill_python_procs(proc):
     for idx in python_proc_ids(proc):

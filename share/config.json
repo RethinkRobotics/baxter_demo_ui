@@ -53,8 +53,19 @@
                     "image_prefix": "MoreOptions",
                     "inner": false,
                     "selectable": true,
-                    "index": 3,
+                    "index": 4,
                     "nextWindow": "more_options_menu"
+                },
+                {
+                    "name": "help",
+                    "size": [72, 67],
+                    "offset": [850, 10],
+                    "function": null,
+                    "image_prefix": "Help",
+                    "inner": true,
+                    "selectable": true,
+                    "index": 3,
+                    "nextWindow": "help_menu"
                 }
             ]
         },
@@ -71,12 +82,12 @@
             },
             "Buttons": [
                 {
-                    "name": "cam_left",
+                    "name": "cam_right",
                     "size": [232, 191],
                     "offset": [175, 30],
-                    "function": "cam_left",
-                    "label": "Left Arm Camera",
-                    "image_prefix": "Camera_LeftCamera",
+                    "function": "cam_right",
+                    "label": "Right Arm Camera",
+                    "image_prefix": "Camera_RightCamera",
                     "inner": true,
                     "window": "cam_submenu",
                     "selectable": true,
@@ -84,12 +95,12 @@
                     "nextWindow": "run_camera"
                 },
                 {
-                    "name": "cam_right",
+                    "name": "cam_left",
                     "size": [232, 191],
                     "offset": [675, 30],
-                    "function": "cam_right",
-                    "label": "Right Arm Camera",
-                    "image_prefix": "Camera_RightCamera",
+                    "function": "cam_left",
+                    "label": "Left Arm Camera",
+                    "image_prefix": "Camera_LeftCamera",
                     "inner": true,
                     "window": "cam_submenu",
                     "selectable": true,
@@ -241,7 +252,7 @@
                     "name": "tare",
                     "size": [354, 91],
                     "offset": [380, 390],
-                    "function": "tare",
+                    "function": "calib",
                     "label": "Tare/Calibrate",
                     "image_prefix": "MoreOptions_Tare",
                     "inner": true,
@@ -249,6 +260,25 @@
                     "selectable": true,
                     "index": 3,
                     "nextWindow": "demo_1"
+                }
+            ]
+        },
+        {
+            "name": "help_menu",
+            "bg": "BRR_Inner",
+            "offset": [0, 0],
+            "parent": "demo_1",
+            "no_scroll": true,
+            "default": "help_menu_back",
+            "back": {
+                "offset": [25, 10],
+                "size": [112, 70]
+            },
+            "images": [
+                {
+                    "file": "BRR_Info",
+                    "offset": [50, 100],
+                    "size": [956, 459]
                 }
             ]
         }
