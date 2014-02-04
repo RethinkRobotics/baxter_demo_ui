@@ -1,0 +1,256 @@
+{
+    "Back": {
+        "image_prefix": "Back"
+    },
+    "Windows": [
+        {
+            "name": "demo_1",
+            "bg": "Panels_Main",
+            "offset": [0, 0],
+            "parent": false,
+            "no_scroll": false,
+            "default": "puppet",
+            "back": false,
+            "Buttons": [
+                {
+                    "name": "puppet",
+                    "size": [267, 221],
+                    "offset": [80, 150],
+                    "function": "puppet",
+                    "image_prefix": "ArmPuppet",
+                    "inner": false,
+                    "selectable": true,
+                    "index": 0,
+                    "nextWindow": "run_puppet"
+                },
+                {
+                    "name": "camera",
+                    "size": [267, 221],
+                    "offset": [380, 150],
+                    "function": null,
+                    "image_prefix": "Camera",
+                    "inner": false,
+                    "selectable": true,
+                    "nextWindow": "cam_submenu",
+                    "index": 1
+                },
+                {
+                    "name": "rec_option",
+                    "size": [267, 221],
+                    "offset": [680, 150],
+                    "function": null,
+                    "image_prefix": "Record",
+                    "inner": false,
+                    "selectable": true,
+                    "index": 2,
+                    "nextWindow": "record_submenu"
+                },
+                {
+                    "name": "more_options",
+                    "size": [72, 67],
+                    "offset": [950, 10],
+                    "function": null,
+                    "image_prefix": "MoreOptions",
+                    "inner": false,
+                    "selectable": true,
+                    "index": 3,
+                    "nextWindow": "more_options_menu"
+                }
+            ]
+        },
+        {
+            "name": "cam_submenu",
+            "bg": "Panels_SubMenu",
+            "offset": [40, 350],
+            "parent": "demo_1",
+            "no_scroll": false,
+            "default": "camera_left",
+            "back": {
+                "offset": [25, 30],
+                "size": [112, 114]
+            },
+            "Buttons": [
+                {
+                    "name": "cam_left",
+                    "size": [232, 191],
+                    "offset": [175, 30],
+                    "function": "cam_left",
+                    "label": "Left Arm Camera",
+                    "image_prefix": "Camera_LeftCamera",
+                    "inner": true,
+                    "window": "cam_submenu",
+                    "selectable": true,
+                    "index": 1,
+                    "nextWindow": "run_camera"
+                },
+                {
+                    "name": "cam_right",
+                    "size": [232, 191],
+                    "offset": [675, 30],
+                    "function": "cam_right",
+                    "label": "Right Arm Camera",
+                    "image_prefix": "Camera_RightCamera",
+                    "inner": true,
+                    "window": "cam_submenu",
+                    "selectable": true,
+                    "index": 3,
+                    "nextWindow": "run_camera"
+                },
+                {
+                    "name": "cam_head",
+                    "size": [232, 191],
+                    "offset": [425, 30],
+                    "function": "cam_head",
+                    "label": "Head Camera",
+                    "image_prefix": "Camera_HeadCamera",
+                    "inner": true,
+                    "window": "cam_submenu",
+                    "selectable": true,
+                    "index": 2,
+                    "nextWindow": "run_camera"
+                }
+            ]
+        },
+        {
+            "name": "record_submenu",
+            "bg": "Panels_SubMenu",
+            "offset": [40, 350],
+            "parent": "demo_1",
+            "no_scroll": false,
+            "default": "record",
+            "back": {
+                "offset": [25, 30],
+                "size": [112, 114]
+            },
+            "Buttons": [
+                {
+                    "name": "record",
+                    "size": [232, 191],
+                    "offset": [250, 30],
+                    "function": "record",
+                    "label": "Record",
+                    "image_prefix": "Record_Record",
+                    "inner": true,
+                    "window": "record_submenu",
+                    "selectable": true,
+                    "index": 1,
+                    "nextWindow": "run_record"
+                },
+                {
+                    "name": "play",
+                    "size": [232, 191],
+                    "offset": [550, 30],
+                    "function": "play",
+                    "label": "Play",
+                    "image_prefix": "Record_Play",
+                    "inner": true,
+                    "window": "record_submenu",
+                    "selectable": false,
+                    "index": 2,
+                    "nextWindow": "run_playback"
+                }
+            ]
+        },
+        {
+            "name": "run_camera",
+            "bg": "BRR_Inner_Camera",
+            "offset": [0, 0],
+            "parent": "cam_submenu",
+            "no_scroll": true,
+            "default": "run_camera_back",
+            "back": {
+                "offset": [25, 130],
+                "size": [112, 114]
+            }
+        },
+        {
+            "name": "run_record",
+            "bg": "BRR_Inner",
+            "offset": [0, 0],
+            "parent": "record_submenu",
+            "no_scroll": true,
+            "default": "run_record_back",
+            "back": {
+                "offset": [25, 130],
+                "size": [112, 114]
+            }
+        },
+        {
+            "name": "run_playback",
+            "bg": "BRR_Inner",
+            "offset": [0, 0],
+            "parent": "record_submenu",
+            "no_scroll": true,
+            "default": "run_playback_back",
+            "back": {
+                "offset": [25, 130],
+                "size": [112, 114]
+            }
+        },
+        {
+            "name": "run_puppet",
+            "bg": "BRR_Inner",
+            "offset": [0, 0],
+            "parent": "demo_1",
+            "no_scroll": true,
+            "default": "run_puppet_back",
+            "back": {
+                "offset": [25, 130],
+                "size": [112, 114]
+            }
+        },
+        {
+            "name": "more_options_menu",
+            "bg": "Panels_MoreOptions",
+            "offset": [0, 0],
+            "parent": "demo_1",
+            "no_scroll": false,
+            "default": "more_options_menu_back",
+            "back": {
+                "offset": [25, 130],
+                "size": [112, 114]
+            },
+            "Buttons": [
+                {
+                    "name": "shutdown",
+                    "size": [354, 91],
+                    "offset": [380, 150],
+                    "function": "shutdown",
+                    "label": "Shutdown",
+                    "image_prefix": "MoreOptions_Shutdown",
+                    "inner": true,
+                    "window": "more_options_menu",
+                    "selectable": true,
+                    "index": 1,
+                    "nextWindow": "demo_1"
+                },
+                {
+                    "name": "reboot",
+                    "size": [354, 91],
+                    "offset": [380, 270],
+                    "function": "reboot",
+                    "label": "Reboot",
+                    "image_prefix": "MoreOptions_Reboot",
+                    "inner": true,
+                    "window": "more_options_menu",
+                    "selectable": true,
+                    "index": 2,
+                    "nextWindow": "demo_1"
+                },
+                {
+                    "name": "tare",
+                    "size": [354, 91],
+                    "offset": [380, 390],
+                    "function": "tare",
+                    "label": "Tare/Calibrate",
+                    "image_prefix": "MoreOptions_Tare",
+                    "inner": true,
+                    "window": "more_options_menu",
+                    "selectable": true,
+                    "index": 3,
+                    "nextWindow": "demo_1"
+                }
+            ]
+        }
+    ]
+}
