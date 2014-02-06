@@ -145,9 +145,19 @@ class BrrUi(object):
         self._wheel_states = {'left': self._navigators['left'].wheel,
                              'right': self._navigators['right'].wheel}
 
-        self.cameras = {'left_hand': CameraController('left_hand_camera'),
-                        'right_hand': CameraController('right_hand_camera'),
-                        'head': CameraController('head_camera')}
+        self.cameras = dict()
+        for cam in ['left_hand', 'right_hand', 'head']:
+            try:
+                self.cameras[cam] = CameraController('%s_camera' % cam)
+            except:
+                self.windows['cam_submenu'].set_btn_selectable('cam_%s' % cam,
+                                                               False)
+                sel = self.windows['cam_submenu'].selected_btn()
+                bad_cam = self.windows['cam_submenu'].get_btn('cam_%s' % cam)
+                if sel == bad_cam:
+                    if not self.windows['cam_submenu'].scroll(1):
+                        self.windows['cam_submenu'].selected_btn_index = 0
+
         self.cam_sub = None
 
         self._l_grip = {'interface': Gripper('left'), 'type': 'custom'}
@@ -359,7 +369,7 @@ def wobbler(ui, side):
 def record(ui, side):
     proc = RosProcess('rosrun baxter_examples '
                        'joint_recorder.py -f recording')
-    ui.windows['record_submenu'].set_btn_selectable(2, True)
+    ui.windows['record_submenu'].set_btn_selectable('play', True)
 
 
 def play(ui, side):
@@ -488,8 +498,6 @@ def main():
     ui.draw()
     check_calib()
 
-    ui.scroll(1)
-    ui.scroll(1)
     ui.scroll(1)
     ui.ok_pressed(1, 'left')
     while not rospy.is_shutdown():

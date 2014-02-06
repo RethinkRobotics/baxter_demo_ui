@@ -82,7 +82,7 @@
             },
             "Buttons": [
                 {
-                    "name": "cam_right",
+                    "name": "cam_right_hand",
                     "size": [232, 191],
                     "offset": [175, 30],
                     "function": "cam_right",
@@ -95,7 +95,7 @@
                     "nextWindow": "run_camera"
                 },
                 {
-                    "name": "cam_left",
+                    "name": "cam_left_hand",
                     "size": [232, 191],
                     "offset": [675, 30],
                     "function": "cam_left",
