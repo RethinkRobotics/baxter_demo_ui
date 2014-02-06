@@ -134,7 +134,7 @@ class BrrWindow(object):
         if len(self._imgs):
             for bg_img in self._imgs:
                 img.paste(bg_img['img'], tuple(bg_img['offset']))
-                #img.paste(bg_img['img'], 
+                #img.paste(bg_img['img'],
                 #          tuple(bg_img['offset']),
                 #          bg_img['img'])
         return img
@@ -143,9 +143,9 @@ class BrrWindow(object):
         return self._buttons[self._selected_btn_index]
 
     def get_btn(self, name):
-        for i, btn in self._buttons.items():
-            if btn.name == name:
-                return btn 
+        btns = [btn for btn in self._buttons.values() if btn.name == name]
+        if len(btns):
+            return btns[0]
         return False
 
     def set_btn_selectable(self, name, sel):

@@ -149,14 +149,14 @@ class BrrUi(object):
         for cam in ['left_hand', 'right_hand', 'head']:
             try:
                 self.cameras[cam] = CameraController('%s_camera' % cam)
-            except:
+            except AttributeError:
                 self.windows['cam_submenu'].set_btn_selectable('cam_%s' % cam,
                                                                False)
                 sel = self.windows['cam_submenu'].selected_btn()
                 bad_cam = self.windows['cam_submenu'].get_btn('cam_%s' % cam)
-                if sel == bad_cam:
-                    if not self.windows['cam_submenu'].scroll(1):
-                        self.windows['cam_submenu'].selected_btn_index = 0
+                if (sel == bad_cam and
+                    not self.windows['cam_submenu'].scroll(1)):
+                    self.windows['cam_submenu'].selected_btn_index = 0
 
         self.cam_sub = None
 
@@ -380,8 +380,6 @@ def play(ui, side):
                         'joint_trajectory_file_playback.py -f recording -l 0')
 
 
-
-
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Utility Button Functions
 # These functions are called by the options in the MoreOptions screen
@@ -390,8 +388,8 @@ def play(ui, side):
 #                          allowed in sudo-ers file.
 # **shutdown(ui, side) - Shuts down the robot using "shutdown -h now"
 #                            allowed in the sudo-ers file.
-# **calib(ui, side, stage) - Calls run_calibs if the stage is 1 or 0 and otherwise
-#                      removes the calibration flag temp file.
+# **calib(ui, side, stage) - Calls run_calibs if the stage is 1 or 0.
+#                      Otherwise removes the calibration flag temp file.
 # **run_calibs(stage) - Calls run_calib for the appropriate stage,
 #                           for each arm.
 #                       Writes the new calibration stage to a temp file
