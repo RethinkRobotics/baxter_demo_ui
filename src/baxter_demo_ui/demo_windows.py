@@ -60,8 +60,9 @@ import rospkg
 #     selected_btn(self) - Returns the BrrButton element representing
 #                            the currently selected button in this
 #                            window.
-#     set_btn_selectable(self, index, sel) - Sets the selectable parameter
-#                                              of the button at the given
+#     get_btn(self, name) - Returns the BrrButton element with the given name
+#     set_btn_selectable(self, name, sel) - Sets the selectable parameter
+#                                              of the button with the given
 #                                              index to <sel>
 #     scroll(self, direction) - Sets the selected button to the next button
 #                                 in this window in the given direction
@@ -133,7 +134,7 @@ class BrrWindow(object):
         if len(self._imgs):
             for bg_img in self._imgs:
                 img.paste(bg_img['img'], tuple(bg_img['offset']))
-                #img.paste(bg_img['img'], 
+                #img.paste(bg_img['img'],
                 #          tuple(bg_img['offset']),
                 #          bg_img['img'])
         return img
@@ -141,8 +142,14 @@ class BrrWindow(object):
     def selected_btn(self):
         return self._buttons[self._selected_btn_index]
 
-    def set_btn_selectable(self, index, sel):
-        self._buttons[index].selectable = True
+    def get_btn(self, name):
+        btns = [btn for btn in self._buttons.values() if btn.name == name]
+        if len(btns):
+            return btns[0]
+        return False
+
+    def set_btn_selectable(self, name, sel):
+        self.get_btn(name).selectable = sel
 
     def scroll(self, direction):
         print '--@scroll():  direction=%s' % direction
@@ -153,6 +160,7 @@ class BrrWindow(object):
                     self._selected_btn_index = i
                     break
                 i += direction
+        return False
 
     def _gen_img(self, sel_btn, disabled=False):
         if disabled:

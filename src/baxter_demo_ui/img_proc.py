@@ -52,7 +52,7 @@ import PIL
 
 
 def gen_cv(img):
-   return PIL_to_cv(rgb_to_bgr(img))
+    return PIL_to_cv(rgb_to_bgr(img))
 
 
 def rgb_to_bgr(img):
