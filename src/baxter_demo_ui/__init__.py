@@ -1,5 +1,6 @@
 from .demo_buttons import BrrButton
 from .demo_windows import BrrWindow
+from .demo_ui import BrrUi
 from .img_proc import (
     gen_cv,
     rgb_to_bgr,
