@@ -76,15 +76,16 @@ class BrrWindow(object):
         self._no_scroll = window_data['no_scroll']
         self._selected = window_data['default']
 
-        self._font = ImageFont.truetype('%s/FreeSerif.ttf' %
-                                           share_path, 25)
+        self._font = ImageFont.truetype('%s/HelveticaLight.ttf' %
+                                           share_path, 30)
         self._bg = dict()
-        self._bg['normal'] = Image.open('%s/Panels/%s.png' %
+        self._bg['img'] = Image.open('%s/Panels/%s.png' %
                                            (share_path,
                                             window_data['bg']))
+        self._bg['panel'] = window_data['bg']
         self._bg['offset'] = (window_data['offset'][0],
                              window_data['offset'][1])
-        self._bg['size'] = self._bg['normal'].size
+        self._bg['size'] = self._bg['img'].size
 
         self._imgs = []
 
@@ -101,16 +102,11 @@ class BrrWindow(object):
             tmp['offset'] = img['offset']
             self._imgs.append(tmp)
 
-        if window_data['bg'] == 'Panels_Main':
-            self._bg['disabled'] = Image.open('%s/Panels/'
-                                                 '%s_DarkBkg.png' %
-                                                  (share_path,
-                                                   window_data['bg']))
-        else:
-            self._bg['disabled'] = self._bg['normal']
         self._buttons = dict()
+
         for name, btn in buttons.items():
             self._buttons[btn.index] = btn
+
         if self.parent and len(self._buttons) > 1:
             self._selected_btn_index = 1
         else:
@@ -124,19 +120,29 @@ class BrrWindow(object):
             self._states['normal'][name] = self._gen_img(name, disabled=False)
             self._states['disabled'][name] = self._gen_img(name, disabled=True)
 
-    def draw(self, img, selected=True):
-        if selected:
-            tmp = self._states['normal'][self.selected_btn().name]
+        if 'text' in window_data.keys():
+            self.text = window_data['text']
         else:
-            tmp = self._states['disabled'][self.selected_btn().name]
-        img.paste(tmp, self._bg['offset'])
-        #img.paste(tmp, self._bg['offset'], tmp)
+            self.text = list()
+
+    def draw(self, img, selected=True):
+        tmp = self._states['normal'][self.selected_btn().name]
+        if self._bg['panel'] == 'Panels_Main':
+            img.paste(tmp, self._bg['offset'])
+        else:
+            img.paste(tmp, self._bg['offset'], tmp)
         if len(self._imgs):
             for bg_img in self._imgs:
-                img.paste(bg_img['img'], tuple(bg_img['offset']))
-                #img.paste(bg_img['img'],
-                #          tuple(bg_img['offset']),
-                #          bg_img['img'])
+                img.paste(bg_img['img'],
+                          tuple(bg_img['offset']),
+                          bg_img['img'])
+        d = ImageDraw.Draw(img)
+        for text in self.text:
+            label_x = (self._bg['offset'][0] + self._bg['size'][0] / 2 -
+                       d.textsize(text['text'], self._font)[0] / 2)
+            label_y = text['text_y']
+            d.text((label_x, label_y), text['text'],
+                   fill='white', font=self._font)
         return img
 
     def selected_btn(self):
@@ -163,10 +169,7 @@ class BrrWindow(object):
         return False
 
     def _gen_img(self, sel_btn, disabled=False):
-        if disabled:
-            tmp = copy(self._bg['disabled'])
-        else:
-            tmp = copy(self._bg['normal'])
+        tmp = copy(self._bg['img'])
         d = ImageDraw.Draw(tmp)
         for name, btn in self._buttons.items():
             if btn.name == sel_btn:

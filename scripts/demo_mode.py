@@ -34,7 +34,7 @@ import os
 import rospy
 import rospkg
 from baxter_demo_ui import BrrUi
-
+from baxter_demo_ui.demo_functions import check_calib
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Main loop for the demo mode module.
 # Generates UI elements in the following order:
@@ -54,7 +54,7 @@ def main():
     commands = ['baxter_interface', 'record', 'playback', 'puppet']
     ui = BrrUi(pack_path, conf_path, commands)
     ui.draw()
-    #check_calib()
+    check_calib(ui)
 
     while not rospy.is_shutdown():
         rospy.spin()

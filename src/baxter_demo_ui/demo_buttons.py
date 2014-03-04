@@ -68,46 +68,71 @@ import rospkg
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 class BrrButton(object):
     def __init__(self, name, size, offset,
-                 index, image_prefix, inner,
-                 label='', selectable=True, share_path=''):
+                 index, icon_prefix, btn_type, icon_offset,
+                 label, label_y, selectable=True, share_path=''):
         self.name = name
         self.index = index
         self.selectable = selectable
 
         self._size = tuple(size)
         self._offset = tuple(offset)
-        self._font = ImageFont.truetype('%s/FreeSerif.ttf' %
-                                           share_path, 25)
-        # "inner" refers to a group of image assets that only have 2 images)
-        if inner:
-            base_path = ('%s/Buttons/Buttons_Inner_%s' %
-                         (share_path, image_prefix))
-        else:
-            base_path = ('%s/Buttons/Buttons_%s' %
-                         (share_path, image_prefix))
-        self._imgs = dict()
-        self._imgs['idle'] = Image.open('%s.png' % base_path)
-        self._imgs['selected'] = Image.open('%s_Pressed.png' % base_path)
-        if inner:
-            self._imgs['disabled'] = self._imgs['idle']
-            self._imgs['pressed'] = self._imgs['selected']
-        else:
-            self._imgs['disabled'] = Image.open('%s_Dis.png' % base_path)
-            self._imgs['pressed'] = Image.open('%s_ON.png' % base_path)
-        self._label = label
+        self._font = ImageFont.truetype('%s/HelveticaLight.ttf' %
+                                           share_path, 30)
 
-    def get_image(self, state):
-        return self._imgs[state].resize(self._size, Image.ANTIALIAS)
+        btn_path = '%s/Buttons/Buttons_%s' % (share_path, btn_type)
+        if icon_prefix == 'None':
+            icon_prefix = None
+        elif btn_type == 'Inner':
+            icon_path = '%s/Icons/Icons_Inner_%s' % (share_path, icon_prefix)
+        else:
+            icon_path = '%s/Icons/Icons_%s' % (share_path, icon_prefix)
+
+        base_bg = Image.open('%s.png' % btn_path)
+        pressed_bg = Image.open('%s_Pressed.png' % btn_path)
+        if btn_type in ['Main', 'Inner']:
+            dis_bg = Image.open('%s_Dis.png' % btn_path)
+        else:
+            dis_bg = Image.open('%s.png' % btn_path)
+
+        if icon_prefix == None:
+            dis_icon = None
+            base_icon = None
+        else:
+            base_icon = Image.open('%s.png' % icon_path)
+            if icon_prefix == 'Inner_Back':
+                dis_icon = Image.open('%s.png' % icon_path)
+            else:
+                dis_icon = Image.open('%s_Dis.png' % icon_path)
+
+        self._imgs = dict()
+        self._imgs['idle'] = self.gen_image(base_bg, base_icon, icon_offset)
+        self._imgs['selected'] = self.gen_image(pressed_bg,
+                                                base_icon,
+                                                icon_offset)
+        self._imgs['disabled'] = self.gen_image(dis_bg,
+                                                dis_icon,
+                                                icon_offset)
+        self._imgs['pressed'] = self.gen_image(pressed_bg,
+                                               dis_icon,
+                                               icon_offset)
+
+        self._label = label
+        self._label_y = label_y
+
+    def gen_image(self, btn, icon, offset):
+        img = btn.resize(self._size, Image.ANTIALIAS)
+        if icon != None:
+            img.paste(icon, tuple(offset), icon)
+        return img
 
     def draw_label(self, draw):
         label_x = (self._offset[0] + self._size[0] / 2 -
                    draw.textsize(self._label, self._font)[0] / 2)
-        label_y = self._offset[1] + self._size[1]
+        label_y = self._offset[1] + self._label_y
         draw.text((label_x, label_y), self._label,
                   fill='white', font=self._font)
 
     def draw(self, img, draw, state):
-        tmp = self.get_image(state)
+        tmp = self._imgs[state]
+        img.paste(tmp, self._offset, tmp)
         self.draw_label(draw)
-        img.paste(tmp, self._offset)
-        #img.paste(tmp, selt._offset, tmp)

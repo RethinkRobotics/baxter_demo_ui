@@ -126,7 +126,7 @@ class BrrUi(object):
         self._status = RobotEnable()
         self._commands = commands
         self._font = ImageFont.truetype(
-                '%s/FreeSerif.ttf' % share_path, 25
+                '%s/HelveticaLight.ttf' % share_path, 30
         )
         self._textHeight = self._font.getsize('W')[1]
         self._active_example = False
@@ -173,49 +173,110 @@ class BrrUi(object):
 
         self._l_grip = {'interface': Gripper('left'), 'type': 'custom'}
         self._r_grip = {'interface': Gripper('right'), 'type': 'custom'}
-        rospy.Timer(rospy.Duration(.5), self._update_grippers)
+        rospy.Timer(rospy.Duration(.5), self._check_enable)
 
+        self.error_state = False
         self._enable()
+        self.calib_stage = 0
         mk_process('rosrun baxter_tools tuck_arms.py -u')
 
     def _load_config(self):
         f = open(self.conf_path).read()
         conf_data = json.loads(f)
-        print "?"
         for window in conf_data['Windows']:
             buttons = dict()
             if window['back']:
                 name = '%s_back' % window['name']
                 size = window['back']['size']
                 offset = window['back']['offset']
-                if window['parent']:
-                    img_pref = 'Back'
-                    inner = True
-                else:
-                    img_pref = 'MainBack'
-                    inner = False
+                icon_prefix = 'Inner_Back'
                 buttons[name] = BrrButton(name, size, offset, 0,
-                                          img_pref, inner,
-                                          '', True, self.share_path)
+                                          icon_prefix, 'TopSmall', [0, 20],
+                                          '', 0, True, self.share_path)
                 self._btn_context[name] = {'nextWindow': window['parent'],
                                          'function': 'Back'}
-            try:
+            #try:
+            if 'Buttons' in window.keys():
                 for btn in window['Buttons']:
                     buttons[btn['name']] = BrrButton(
                                     btn['name'], btn['size'],
                                     btn['offset'], btn['index'],
-                                    btn['image_prefix'],
-                                    btn['inner'], '',
+                                    btn['icon_prefix'],
+                                    btn['button'], btn['icon_offset'],
+                                    btn['label'], btn['label_y'],
                                     btn['selectable'], self.share_path)
                     self._btn_context[btn['name']] = {
                                             'nextWindow': btn['nextWindow'],
                                             'function': btn['function']}
-            except:
-                pass
 
             self.windows[window['name']] = BrrWindow(window,
                                                      buttons,
                                                      self.share_path)
+
+        errors = conf_data['Error']
+        for error in errors['errors']:
+            name = error['name']
+            buttons = dict()
+            buttons['OK'] = BrrButton(
+                                '%s_OK' % name, [200, 60],
+                                errors['OK']['offset'], 0, None,
+                                "Wide", [0, 0], "OK", 16, True,
+                                self.share_path)
+            self._btn_context["%s_OK" % name] = {
+                                            'nextWindow': None,
+                                            'function': 'Back'}
+            window = {
+                'name': '%s_error' % name,
+                'bg': errors['bg'],
+                'back': False,
+                'offset': errors['offset'],
+                'parent': False,
+                'default': '%s_OK' % name,
+                'no_scroll': False,
+                'text': [{'text': error['text'],
+                           'text_y': error['text_y']}],
+            }
+            self.windows['%s_error' % name] = BrrWindow(window, buttons,
+                                                        self.share_path)
+
+        for win in conf_data['Confirmation']['Windows']:
+            conf = conf_data['Confirmation']
+            name = win['name']
+            labels = list()
+            for text in win['messages']:
+                labels.append({'text': text['text'],
+                              'text_y': text['text_y']})
+
+            buttons = dict()
+            buttons['OK'] = BrrButton(
+                                '%s_OK' % name, [200, 60],
+                                conf['OK']['offset'], 1, None,
+                                "Wide", [0, 0], win['conf_text'], 16, True,
+                                self.share_path)
+            self._btn_context['%s_OK' % name] = {
+                                        'nextWindow': win['nextWindow'],
+                                        'function': win['function']}
+            buttons['Cancel'] = BrrButton(
+                                '%s_Back' % name, [200, 60],
+                                conf['Cancel']['offset'], 0, None,
+                                "Wide", [0, 0], "Cancel", 16, True,
+                                self.share_path)
+            self._btn_context['%s_Back' % name] = {
+                                        'nextWindow': win['parent'],
+                                        'function': 'Back'}
+
+            window = {
+                    'name': '%s_conf' % win['name'],
+                    'bg': conf['bg'],
+                    'back': False,
+                    'offset': conf['offset'],
+                    'parent': win['parent'],
+                    'default': '%s_OK' % name,
+                    'no_scroll': False,
+                    'text': labels
+            }
+            self.windows['%s_conf' % name] = BrrWindow(window, buttons,
+                                                       self.share_path)
 
     def selected(self):
         return self.active_window.selected_btn()
@@ -236,6 +297,15 @@ class BrrUi(object):
         msg = cv_to_msg(img)
         self.xdisp.publish(msg)
         rospy.sleep(.1)
+
+    '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Simple method that sets the active window based on the window's name
+    #     and re-draws the UI.
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+    def set_active_window(self, name):
+        self.active_window = self.windows[name]
+        self.draw()
 
     def _draw_window(self, img, window, selected=True):
         if self.windows[window].parent:
@@ -288,17 +358,20 @@ class BrrUi(object):
             context = self._btn_context[self.selected().name]
             func = self._btn_context[self.selected().name]['function']
             if func == 'Back':
+                self.error_state = False
                 self.kill_examples()
-            self.active_window = self.windows[context['nextWindow']]
+                mk_process('rm -rf /var/tmp/hlr/demo_calib.txt')
+            self.set_active_window(context['nextWindow'])
             self.draw()
             if func and func != 'Back':
                 getattr(self._functions, func)(self, side)
 
     def back(self, v):
         if v == True:
+            self.error_state = False
             if self.active_window.parent:
                 self.kill_examples()
-                self.active_window = self.windows[self.active_window.parent]
+                self.set_active_window(self.active_window.parent)
                 self.draw()
 
     '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -317,10 +390,14 @@ class BrrUi(object):
         if self.cam_sub != None:
             self.cam_sub.unregister()
         self.draw()
+        if not self.error_state:
+            self._enable()
+
+    def _check_enable(self, event):
         self._enable()
 
     def _enable(self, v=1):
-        if v == 1:
+        if v == 1 and not self._status.state().enabled:
             try:
                 self._status.enable()
             except:
@@ -328,13 +405,26 @@ class BrrUi(object):
                 return False
             if not self._status.state().enabled:
                 self.error_screen('no_enable')
+                return False
         self._enable_cuff()
+        return True
 
     def error_screen(self, error):
-        error_screen = '%s_error' % error
-        self.windows[error_screen].parent = self.active_window.name
-        self.active_window = self.windows(error_screen)
-        self.draw()
+        if self.error_state == False:
+            self.error_state = error
+            self.kill_examples()
+            error_screen = '%s_error' % error
+            print error_screen
+            print self.windows[error_screen].parent
+            if self.active_window.name.startswith('run'):
+                new_parent = self.active_window.parent
+            else:
+                new_parent = self.active_window.name
+            print new_parent
+            self._btn_context['%s_OK' % error]['nextWindow'] = new_parent
+            self.windows[error_screen].parent = new_parent
+            self.set_active_window(error_screen)
+            self.draw()
 
     def _enable_cuff(self):
         if len(python_proc_ids('gripper_cuff_control')) == 0:

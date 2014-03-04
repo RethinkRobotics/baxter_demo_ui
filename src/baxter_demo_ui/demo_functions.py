@@ -37,6 +37,14 @@ from .baxter_procs import (
 
 from control_msgs.msg import FollowJointTrajectoryAction
 
+from sensor_msgs.msg import Image as ImageMsg
+
+from .img_proc import (
+    cv_to_msg,
+    gen_cv,
+    overlay,
+)
+
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Button Functions
 # These functions are called by the buttons in the UI, as referenced
@@ -155,20 +163,20 @@ def shutdown(ui=None, side=None):
     mk_process('shutdown -h now')
 
 
-def calib(ui, side=None, stage=0):
-    if stage == 0 or stage == 1:
-        run_calibs(ui, stage)
+def calib(ui, side=None):
+    if ui.calib_stage == 0 or ui.calib_stage == 1:
+        run_calibs(ui)
     else:
         mk_process('rm -rf /var/tmp/hlr/demo_calib.txt')
 
 
-def run_calibs(ui, stage):
+def run_calibs(ui):
     for side in ['left', 'right']:
-        if run_calib(stage, side) == 0:
-            ui.error_screen('calib_error')
+        if run_calib(ui.calib_stage, side) != 0:
+            ui.set_active_window('retry_calib_conf')
             return 0
     f = open('/var/tmp/hlr/demo_calib.txt', 'w')
-    f.write('stage %s' % (stage + 1))
+    f.write('stage %s' % (ui.calib_stage + 1))
     reboot()
 
 def run_calib(stage, side):
@@ -179,10 +187,13 @@ def run_calib(stage, side):
 
 
 # Checks for temp calibration file on startup and runs calibrations if found.
-def check_calib():
+def check_calib(ui):
     try:
-        f = open('/var/tmp/hlr/calib.txt', 'r')
+        f = open('/var/tmp/hlr/demo_calib.txt', 'r')
         stage = f.read()
-        calib(int(stage.split()[1]))
+        ui.calib_stage = int(stage.split()[1])
+        if ui.calib_stage < 2:
+            ui.set_active_window('run_calib')
+        calib(ui)
     except IOError:
         pass
