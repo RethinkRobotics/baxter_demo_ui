@@ -190,8 +190,9 @@ class BrrUi(object):
                 size = window['back']['size']
                 offset = window['back']['offset']
                 icon_prefix = 'Inner_Back'
+                icon_offset = window['back']['icon_offset']
                 buttons[name] = BrrButton(name, size, offset, 0,
-                                          icon_prefix, 'TopSmall', [0, 20],
+                                          icon_prefix, 'TopSmall', icon_offset,
                                           '', 0, True, self.share_path)
                 self._btn_context[name] = {'nextWindow': window['parent'],
                                          'function': 'Back'}

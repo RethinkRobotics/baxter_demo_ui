@@ -93,6 +93,7 @@
             "default": "camera_left",
             "back": {
                 "offset": [25, 30],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             },
             "Buttons": [
@@ -155,6 +156,7 @@
             "default": "record",
             "back": {
                 "offset": [25, 30],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             },
             "Buttons": [
@@ -201,6 +203,7 @@
             "default": "run_camera_back",
             "back": {
                 "offset": [25, 130],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             }
         },
@@ -213,6 +216,7 @@
             "default": "run_record_back",
             "back": {
                 "offset": [25, 130],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             }
         },
@@ -225,6 +229,7 @@
             "default": "run_playback_back",
             "back": {
                 "offset": [25, 130],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             }
         },
@@ -237,6 +242,7 @@
             "default": "run_puppet_back",
             "back": {
                 "offset": [25, 130],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             }
         },
@@ -249,6 +255,7 @@
             "default": "run_calib_back",
             "back": {
                 "offset": [25, 130],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             },
             "text": [
@@ -267,6 +274,8 @@
             "default": "more_options_menu_back",
             "back": {
                 "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "icon_offset": [0, 20],
                 "size": [112, 114]
             },
             "Buttons": [
@@ -329,6 +338,7 @@
             "default": "help_menu_back",
             "back": {
                 "offset": [25, 10],
+                "icon_offset": [0, 5],
                 "size": [112, 70]
             },
             "images": [
