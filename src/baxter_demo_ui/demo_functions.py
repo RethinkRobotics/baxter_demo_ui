@@ -163,11 +163,30 @@ def shutdown(ui=None, side=None):
     mk_process('sudo shutdown -h now')
 
 
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Note on calibration functions:
+#   The three 'stages' of calibration are:
+#   * stage 1: Calibration
+#   * stage 2: Tare
+#   * stage 3: Done
+# When running calibration, the user will run the calib() function from
+#   the UI.  At this point, the calib_stage will be 0, so it will call
+#   run_calibs() which will run Calibrate on both arms, and write a file
+#   setting the stage to 1.
+# Upon reboot, the UI will check that file with check_calibs() and note
+#   that it is now at stage 1.  At this point, it will change to the
+#   run_calib window and run Tare on both arms, re-write the file to
+#   set the new stage to 2 and reboot again
+# On this final run, check_calibs() will note that we are on stage 2
+#   and will not navigate to the run_calib screen.  It will just call
+#   cailb() which will note the stage, and simply delete the stage file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 def calib(ui, side=None):
-    if ui.calib_stage == 0 or ui.calib_stage == 1:
+    if ui.calib_stage < 2:
         run_calibs(ui)
     else:
         mk_process('rm -rf /var/tmp/hlr/demo_calib.txt')
+        ui.calib_stage = 0
 
 
 def run_calibs(ui):
