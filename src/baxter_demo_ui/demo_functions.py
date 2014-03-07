@@ -156,11 +156,11 @@ def play(ui, side):
 #                            1 -> calibrate_arm.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 def reboot(ui=None, side=None):
-    mk_process('shutdown -r now')
+    mk_process('sudo shutdown -r now')
 
 
 def shutdown(ui=None, side=None):
-    mk_process('shutdown -h now')
+    mk_process('sudo shutdown -h now')
 
 
 def calib(ui, side=None):

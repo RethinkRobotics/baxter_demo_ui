@@ -200,32 +200,49 @@ class BrrUi(object):
             if 'Buttons' in window.keys():
                 for btn in window['Buttons']:
                     buttons[btn['name']] = BrrButton(
-                                    btn['name'], btn['size'],
-                                    btn['offset'], btn['index'],
-                                    btn['icon_prefix'],
-                                    btn['button'], btn['icon_offset'],
-                                    btn['label'], btn['label_y'],
-                                    btn['selectable'], self.share_path)
-                    self._btn_context[btn['name']] = {
-                                            'nextWindow': btn['nextWindow'],
-                                            'function': btn['function']}
+                                                     btn['name'],
+                                                     btn['size'],
+                                                     btn['offset'],
+                                                     btn['index'],
+                                                     btn['icon_prefix'],
+                                                     btn['button'],
+                                                     btn['icon_offset'],
+                                                     btn['label'],
+                                                     btn['label_y'],
+                                                     btn['selectable'],
+                                                     self.share_path
+                                                    )
 
-            self.windows[window['name']] = BrrWindow(window,
-                                                     buttons,
-                                                     self.share_path)
+                    self._btn_context[btn['name']] = {
+                        'nextWindow': btn['nextWindow'],
+                        'function': btn['function']
+                    }
+
+                self.windows[window['name']] = BrrWindow(window,
+                                                         buttons,
+                                                         self.share_path)
 
         errors = conf_data['Error']
         for error in errors['errors']:
             name = error['name']
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                '%s_OK' % name, [200, 60],
-                                errors['OK']['offset'], 0, None,
-                                "Wide", [0, 0], "OK", 16, True,
-                                self.share_path)
+                                      '%s_OK' % name,         #name
+                                      [200, 60],              #size
+                                      errors['OK']['offset'], #button offset
+                                      0,                      #index
+                                      None,                   #icon prefix 
+                                      "Wide",                 #button type
+                                      [0, 0],                 #icon offset
+                                      "OK",                   #label
+                                      16,                     #label y-offset
+                                      True,                   #selectable?
+                                      self.share_path
+                                     )
             self._btn_context["%s_OK" % name] = {
-                                            'nextWindow': None,
-                                            'function': 'Back'}
+                'nextWindow': None,
+                'function': 'Back'
+            }
             window = {
                 'name': '%s_error' % name,
                 'bg': errors['bg'],
@@ -250,18 +267,33 @@ class BrrUi(object):
 
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                '%s_OK' % name, [200, 60],
-                                conf['OK']['offset'], 1, None,
-                                "Wide", [0, 0], win['conf_text'], 16, True,
-                                self.share_path)
+                                      '%s_OK' % name,       #name
+                                      [200, 60],            #size
+                                      conf['OK']['offset'], #button offset
+                                      1,                    #index
+                                      None,                 #icon prefix
+                                      "Wide",               #button type
+                                      [0, 0],               #icon offset
+                                      win['conf_text'],     #label
+                                      16,                   #label y-offset
+                                      True,                 #selectable?
+                                      self.share_path)
             self._btn_context['%s_OK' % name] = {
                                         'nextWindow': win['nextWindow'],
                                         'function': win['function']}
             buttons['Cancel'] = BrrButton(
-                                '%s_Back' % name, [200, 60],
-                                conf['Cancel']['offset'], 0, None,
-                                "Wide", [0, 0], "Cancel", 16, True,
-                                self.share_path)
+                                          '%s_Back' % name,
+                                          [200, 60],
+                                          conf['Cancel']['offset'],
+                                          0,
+                                          None,
+                                          "Wide",
+                                          [0, 0],
+                                          "Cancel",
+                                          16,
+                                          True,
+                                          self.share_path
+                                         )
             self._btn_context['%s_Back' % name] = {
                                         'nextWindow': win['parent'],
                                         'function': 'Back'}
