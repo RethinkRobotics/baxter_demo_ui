@@ -196,7 +196,6 @@ class BrrUi(object):
                                           '', 0, True, self.share_path)
                 self._btn_context[name] = {'nextWindow': window['parent'],
                                          'function': 'Back'}
-            #try:
             if 'Buttons' in window.keys():
                 for btn in window['Buttons']:
                     buttons[btn['name']] = BrrButton(
