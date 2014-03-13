@@ -37,6 +37,14 @@ from .baxter_procs import (
 
 from control_msgs.msg import FollowJointTrajectoryAction
 
+from sensor_msgs.msg import Image as ImageMsg
+
+from .img_proc import (
+    cv_to_msg,
+    gen_cv,
+    overlay,
+)
+
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Button Functions
 # These functions are called by the buttons in the UI, as referenced
@@ -148,27 +156,46 @@ def play(ui, side):
 #                            1 -> calibrate_arm.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 def reboot(ui=None, side=None):
-    mk_process('shutdown -r now')
+    mk_process('sudo shutdown -r now')
 
 
 def shutdown(ui=None, side=None):
-    mk_process('shutdown -h now')
+    mk_process('sudo shutdown -h now')
 
 
-def calib(ui, side=None, stage=0):
-    if stage == 0 or stage == 1:
-        run_calibs(ui, stage)
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Note on calibration functions:
+#   The three 'stages' of calibration are:
+#   * stage 1: Calibration
+#   * stage 2: Tare
+#   * stage 3: Done
+# When running calibration, the user will run the calib() function from
+#   the UI.  At this point, the calib_stage will be 0, so it will call
+#   run_calibs() which will run Calibrate on both arms, and write a file
+#   setting the stage to 1.
+# Upon reboot, the UI will check that file with check_calibs() and note
+#   that it is now at stage 1.  At this point, it will change to the
+#   run_calib window and run Tare on both arms, re-write the file to
+#   set the new stage to 2 and reboot again
+# On this final run, check_calibs() will note that we are on stage 2
+#   and will not navigate to the run_calib screen.  It will just call
+#   cailb() which will note the stage, and simply delete the stage file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+def calib(ui, side=None):
+    if ui.calib_stage < 2:
+        run_calibs(ui)
     else:
         mk_process('rm -rf /var/tmp/hlr/demo_calib.txt')
+        ui.calib_stage = 0
 
 
-def run_calibs(ui, stage):
+def run_calibs(ui):
     for side in ['left', 'right']:
-        if run_calib(stage, side) == 0:
-            ui.error_screen('calib_error')
+        if run_calib(ui.calib_stage, side) != 0:
+            ui.set_active_window('retry_calib_conf')
             return 0
     f = open('/var/tmp/hlr/demo_calib.txt', 'w')
-    f.write('stage %s' % (stage + 1))
+    f.write('stage %s' % (ui.calib_stage + 1))
     reboot()
 
 def run_calib(stage, side):
@@ -179,10 +206,13 @@ def run_calib(stage, side):
 
 
 # Checks for temp calibration file on startup and runs calibrations if found.
-def check_calib():
+def check_calib(ui):
     try:
-        f = open('/var/tmp/hlr/calib.txt', 'r')
+        f = open('/var/tmp/hlr/demo_calib.txt', 'r')
         stage = f.read()
-        calib(int(stage.split()[1]))
+        ui.calib_stage = int(stage.split()[1])
+        if ui.calib_stage < 2:
+            ui.set_active_window('run_calib')
+        calib(ui)
     except IOError:
         pass
