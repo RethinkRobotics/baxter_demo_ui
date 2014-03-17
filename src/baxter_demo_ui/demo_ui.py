@@ -217,9 +217,9 @@ class BrrUi(object):
                         'function': btn['function']
                     }
 
-                self.windows[window['name']] = BrrWindow(window,
-                                                         buttons,
-                                                         self.share_path)
+            self.windows[window['name']] = BrrWindow(window,
+                                                     buttons,
+                                                     self.share_path)
 
         errors = conf_data['Error']
         for error in errors['errors']:
