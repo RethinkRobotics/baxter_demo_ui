@@ -3,6 +3,7 @@ project(baxter_demo_ui)
 
 find_package(catkin
   REQUIRED
+  COMPONENTS
   rospy
   sensor_msgs
   std_msgs
