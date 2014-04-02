@@ -153,8 +153,6 @@ class BrrUi(object):
         self._navigators['right'].button1_changed.connect(self.back)
 
         self._wheel_ok = True
-        self._wheel_states = {'left': self._navigators['left'].wheel,
-                             'right': self._navigators['right'].wheel}
 
         self.cameras = dict()
         for cam in ['left_hand', 'right_hand', 'head']:
@@ -363,7 +361,6 @@ class BrrUi(object):
                 self.scroll(1)
             else:
                 self.scroll(-1)
-            self._wheel_states[side] = v
             self._wheel_ok = False
             rospy.Timer(rospy.Duration(.01), self._set_wheel_ok, oneshot=True)
 
