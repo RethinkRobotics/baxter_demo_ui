@@ -178,6 +178,7 @@ class BrrUi(object):
         self.error_state = False
         self._enable()
         self.calib_stage = 0
+        self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
 
     def _load_config(self):
@@ -357,9 +358,9 @@ class BrrUi(object):
         self._wheel_moved(v, 'right')
 
     def _wheel_moved(self, v, side):
+        print v
         if not self._active_example and self._wheel_ok:
-            wheel = self._wheel_states[side]
-            if v > wheel and v - wheel < 100:
+            if v > 0:
                 self.scroll(1)
             else:
                 self.scroll(-1)
