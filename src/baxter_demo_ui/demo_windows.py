@@ -158,7 +158,7 @@ class BrrWindow(object):
         self.get_btn(name).selectable = sel
 
     def scroll(self, direction):
-        print '--@scroll():  direction=%s' % direction
+        rospy.loginfo('--@scroll():  direction=%s' % direction)
         if not self._no_scroll:
             i = self._selected_btn_index + direction
             while (i >= 0 and i < len(self._buttons)):

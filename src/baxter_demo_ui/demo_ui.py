@@ -324,7 +324,7 @@ class BrrUi(object):
 
     def draw(self):
         img = Image.new('RGB', (1024, 600), 'white')
-        print '--@UI.draw():  window = %s' % self.active_window.name
+        rospy.loginfo('--@UI.draw():  window = %s' % self.active_window.name)
         img = gen_cv(self._draw_window(img, self.active_window.name))
         self.img = img
         msg = cv_to_msg(img)
@@ -358,7 +358,6 @@ class BrrUi(object):
         self._wheel_moved(v, 'right')
 
     def _wheel_moved(self, v, side):
-        print v
         if not self._active_example and self._wheel_ok:
             if v > 0:
                 self.scroll(1)
@@ -413,7 +412,7 @@ class BrrUi(object):
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
     def kill_examples(self, v=1):
-        print '--@kill_examples'
+        rospy.loginfo('--@kill_examples')
         self._active_example = False
         self.selected()._status = 'selected'
         for cmd in self._commands:
@@ -447,13 +446,10 @@ class BrrUi(object):
             self.error_state = error
             self.kill_examples()
             error_screen = '%s_error' % error
-            print error_screen
-            print self.windows[error_screen].parent
             if self.active_window.name.startswith('run'):
                 new_parent = self.active_window.parent
             else:
                 new_parent = self.active_window.name
-            print new_parent
             self._btn_context['%s_OK' % error]['nextWindow'] = new_parent
             self.windows[error_screen].parent = new_parent
             self.set_active_window(error_screen)
