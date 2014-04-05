@@ -51,9 +51,9 @@ def main():
     pack_path = rp.get_path('baxter_demo_ui') + '/share'
     conf_path = '%s/config.json' % pack_path
 
-    commands = ['baxter_interface', 'record', 'playback', 'puppet']
+    commands = ['baxter_interface', 'record', 'playback', 'puppet',
+                'tare', 'calibrate']
     ui = BrrUi(pack_path, conf_path, commands)
-    ui.draw()
     check_calib(ui)
 
     while not rospy.is_shutdown():

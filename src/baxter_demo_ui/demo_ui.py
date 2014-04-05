@@ -153,8 +153,6 @@ class BrrUi(object):
         self._navigators['right'].button1_changed.connect(self.back)
 
         self._wheel_ok = True
-        self._wheel_states = {'left': self._navigators['left'].wheel,
-                             'right': self._navigators['right'].wheel}
 
         self.cameras = dict()
         for cam in ['left_hand', 'right_hand', 'head']:
@@ -178,6 +176,7 @@ class BrrUi(object):
         self.error_state = False
         self._enable()
         self.calib_stage = 0
+        self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
 
     def _load_config(self):
@@ -323,7 +322,7 @@ class BrrUi(object):
 
     def draw(self):
         img = Image.new('RGB', (1024, 600), 'white')
-        print '--@UI.draw():  window = %s' % self.active_window.name
+        rospy.loginfo('--@UI.draw():  window = %s' % self.active_window.name)
         img = gen_cv(self._draw_window(img, self.active_window.name))
         self.img = img
         msg = cv_to_msg(img)
@@ -358,12 +357,10 @@ class BrrUi(object):
 
     def _wheel_moved(self, v, side):
         if not self._active_example and self._wheel_ok:
-            wheel = self._wheel_states[side]
-            if v > wheel and v - wheel < 100:
+            if v > 0:
                 self.scroll(1)
             else:
                 self.scroll(-1)
-            self._wheel_states[side] = v
             self._wheel_ok = False
             rospy.Timer(rospy.Duration(.01), self._set_wheel_ok, oneshot=True)
 
@@ -412,7 +409,7 @@ class BrrUi(object):
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
     def kill_examples(self, v=1):
-        print '--@kill_examples'
+        rospy.loginfo('--@kill_examples')
         self._active_example = False
         self.selected()._status = 'selected'
         for cmd in self._commands:
@@ -446,13 +443,10 @@ class BrrUi(object):
             self.error_state = error
             self.kill_examples()
             error_screen = '%s_error' % error
-            print error_screen
-            print self.windows[error_screen].parent
             if self.active_window.name.startswith('run'):
                 new_parent = self.active_window.parent
             else:
                 new_parent = self.active_window.name
-            print new_parent
             self._btn_context['%s_OK' % error]['nextWindow'] = new_parent
             self.windows[error_screen].parent = new_parent
             self.set_active_window(error_screen)
