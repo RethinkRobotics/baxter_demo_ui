@@ -68,6 +68,8 @@ import rospkg
 #                                 in this window in the given direction
 #                                 that is selectable.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 class BrrWindow(object):
     def __init__(self, window_data, buttons, share_path):
         self.name = window_data['name']

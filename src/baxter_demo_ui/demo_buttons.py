@@ -66,6 +66,8 @@ import rospkg
 #     draw(self, img, draw, state) - Draws the image at the correct size
 #                                      and offset onto the passed img.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 class BrrButton(object):
     def __init__(self, name, size, offset,
                  index, icon_prefix, btn_type, icon_offset,

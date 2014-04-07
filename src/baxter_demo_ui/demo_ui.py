@@ -109,6 +109,8 @@ import demo_functions
 #                                Sets the error window's parent to preserve
 #                                    "back" functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 class BrrUi(object):
     def __init__(self, share_path, conf_path, commands):
         self.share_path = share_path
@@ -225,16 +227,16 @@ class BrrUi(object):
             name = error['name']
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                      '%s_OK' % name,  #name
-                                      [200, 60],  #size
-                                      errors['OK']['offset'],  #button offset
-                                      0,  #index
-                                      None,  #icon prefix
-                                      "Wide",  #button type
-                                      [0, 0],  #icon offset
-                                      "OK",  #label
-                                      16,  #label y-offset
-                                      True,  #selectable?
+                                      '%s_OK' % name,  # name
+                                      [200, 60],  # size
+                                      errors['OK']['offset'],  # button offset
+                                      0,  # index
+                                      None,  # icon prefix
+                                      "Wide",  # button type
+                                      [0, 0],  # icon offset
+                                      "OK",  # label
+                                      16,  # label y-offset
+                                      True,  # selectable?
                                       self.share_path
                                      )
             self._btn_context["%s_OK" % name] = {
@@ -265,16 +267,16 @@ class BrrUi(object):
 
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                      '%s_OK' % name,  #name
-                                      [200, 60],  #size
-                                      conf['OK']['offset'],  #button offset
-                                      1,  #index
-                                      None,  #icon prefix
-                                      "Wide",  #button type
-                                      [0, 0],  #icon offset
-                                      win['conf_text'],  #label
-                                      16,  #label y-offset
-                                      True,  #selectable?
+                                      '%s_OK' % name,  # name
+                                      [200, 60],  # size
+                                      conf['OK']['offset'],  # button offset
+                                      1,  # index
+                                      None,  # icon prefix
+                                      "Wide",  # button type
+                                      [0, 0],  # icon offset
+                                      win['conf_text'],  # label
+                                      16,  # label y-offset
+                                      True,  # selectable?
                                       self.share_path)
             self._btn_context['%s_OK' % name] = {
                                         'nextWindow': win['nextWindow'],

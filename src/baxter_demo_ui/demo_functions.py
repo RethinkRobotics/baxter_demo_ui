@@ -60,6 +60,8 @@ from .img_proc import (
 #                          as selectable
 # **play(ui, side) - Runs joint_trajectory_file_playback on a recorded file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def cam_right(ui, side):
     camera_disp(ui, 'right_hand')
 
@@ -155,6 +157,8 @@ def play(ui, side):
 #                            0 -> tare.py
 #                            1 -> calibrate_arm.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def reboot(ui=None, side=None):
     mk_process('sudo shutdown -r now')
 
@@ -181,6 +185,8 @@ def shutdown(ui=None, side=None):
 #   and will not navigate to the run_calib screen.  It will just call
 #   cailb() which will note the stage, and simply delete the stage file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def calib(ui, side=None):
     if ui.calib_stage < 2:
         run_calibs(ui)
@@ -197,6 +203,7 @@ def run_calibs(ui):
     f = open('/var/tmp/hlr/demo_calib.txt', 'w')
     f.write('stage %s' % (ui.calib_stage + 1))
     reboot()
+
 
 def run_calib(stage, side):
     if stage == 0:

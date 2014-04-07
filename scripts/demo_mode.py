@@ -35,6 +35,7 @@ import rospy
 import rospkg
 from baxter_demo_ui import BrrUi
 from baxter_demo_ui.demo_functions import check_calib
+
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Main loop for the demo mode module.
 # Generates UI elements in the following order:
@@ -45,6 +46,8 @@ from baxter_demo_ui.demo_functions import check_calib
 #     Finally, the window will be instantiated with a list of buttons
 # After all windows are instantiated, the BrrUi class will be instantiated.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def main():
     rospy.init_node('rsdk_demo_ui')
     rp = rospkg.RosPack()
