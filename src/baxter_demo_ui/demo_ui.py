@@ -322,7 +322,6 @@ class BrrUi(object):
 
     def draw(self):
         img = Image.new('RGB', (1024, 600), 'white')
-        rospy.loginfo('--@UI.draw():  window = %s' % self.active_window.name)
         img = gen_cv(self._draw_window(img, self.active_window.name))
         self.img = img
         msg = cv_to_msg(img)
