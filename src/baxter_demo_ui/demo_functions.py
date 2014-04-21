@@ -124,7 +124,7 @@ def play(ui, side):
     )
     while True:
         proc1 = RosProcess('rosrun baxter_interface '
-                           'joint_trajectory_action_server.py &')
+                           'joint_trajectory_action_server.py -m velocity &')
         proc1.run()
         rospy.sleep(1)
         if (left_client.wait_for_server(rospy.Duration(1.0)) and
