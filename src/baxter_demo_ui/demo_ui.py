@@ -456,16 +456,3 @@ class BrrUi(object):
     def _enable_cuff(self):
         if len(python_proc_ids('gripper_cuff_control')) == 0:
             RosProcess('rosrun baxter_examples gripper_cuff_control.py')
-
-    def _update_grippers(self, event):
-        new_l = self._l_grip['interface'].type()
-        new_r = self._r_grip['interface'].type()
-        if new_l != self._l_grip['type']:
-            self._l_grip['type'] = new_l
-            if new_l == 'electric':
-                self._l_grip['interface'].calibrate()
-        if new_r != self._r_grip['type']:
-            self._r_grip['type'] = new_r
-            if new_r == 'electric':
-                self._r_grip['interface'].calibrate()
-        self._enable_cuff()
