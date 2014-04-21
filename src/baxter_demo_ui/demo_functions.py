@@ -200,9 +200,9 @@ def run_calibs(ui):
 
 def run_calib(stage, side):
     if stage == 0:
-        return mk_process('rosrun baxter_tools calibrate_arm.py -l %s' % side)
-    elif stage == 1:
         return mk_process('rosrun baxter_tools tare.py -l %s' % side)
+    elif stage == 1:
+        return mk_process('rosrun baxter_tools calibrate_arm.py -l %s' % side)
 
 
 # Checks for temp calibration file on startup and runs calibrations if found.
