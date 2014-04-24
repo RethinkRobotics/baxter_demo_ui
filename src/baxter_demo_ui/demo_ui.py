@@ -180,17 +180,19 @@ class BrrUi(object):
         # Navigator Back Button
         self._navigators['left'].button1_changed.connect(self.back)
         self._navigators['right'].button1_changed.connect(self.back)
-        
+
         self._listeners_connected = True
 
     def _disconnect_listeners(self):
         # Navigator OK Button
-        self._navigators['left'].button0_changed.disconnect(self._left_ok_pressed)
+        self._navigators['left'].button0_changed.disconnect(
+            self._left_ok_pressed)
         self._navigators['right'].button0_changed.disconnect(
             self._right_ok_pressed)
 
         # Navigator Wheel
-        self._navigators['left'].wheel_changed.disconnect(self._left_wheel_moved)
+        self._navigators['left'].wheel_changed.disconnect(
+            self._left_wheel_moved)
         self._navigators['right'].wheel_changed.disconnect(
             self._right_wheel_moved)
 
@@ -250,16 +252,16 @@ class BrrUi(object):
             name = error['name']
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                      '%s_OK' % name,  #name
-                                      [200, 60],  #size
-                                      errors['OK']['offset'],  #button offset
-                                      0,  #index
-                                      None,  #icon prefix
-                                      "Wide",  #button type
-                                      [0, 0],  #icon offset
-                                      "OK",  #label
-                                      16,  #label y-offset
-                                      True,  #selectable?
+                                      '%s_OK' % name,  # name
+                                      [200, 60],  # size
+                                      errors['OK']['offset'],  # button offset
+                                      0,  # index
+                                      None,  # icon prefix
+                                      "Wide",  # button type
+                                      [0, 0],  # icon offset
+                                      "OK",  # label
+                                      16,  # label y-offset
+                                      True,  # selectable?
                                       self.share_path
                                      )
             self._btn_context["%s_OK" % name] = {
@@ -290,16 +292,16 @@ class BrrUi(object):
 
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                      '%s_OK' % name,  #name
-                                      [200, 60],  #size
-                                      conf['OK']['offset'],  #button offset
-                                      1,  #index
-                                      None,  #icon prefix
-                                      "Wide",  #button type
-                                      [0, 0],  #icon offset
-                                      win['conf_text'],  #label
-                                      16,  #label y-offset
-                                      True,  #selectable?
+                                      '%s_OK' % name,  # name
+                                      [200, 60],  # size
+                                      conf['OK']['offset'],  # button offset
+                                      1,  # index
+                                      None,  # icon prefix
+                                      "Wide",  # button type
+                                      [0, 0],  # icon offset
+                                      win['conf_text'],  # label
+                                      16,  # label y-offset
+                                      True,  # selectable?
                                       self.share_path)
             self._btn_context['%s_OK' % name] = {
                                         'nextWindow': win['nextWindow'],
