@@ -136,23 +136,8 @@ class BrrUi(object):
         self._navigators = {'left': Navigator('left'),
                            'right': Navigator('right')}
 
-        # Navigator OK Button
-        self._navigators['left'].button0_changed.connect(self._left_ok_pressed)
-        self._navigators['right'].button0_changed.connect(
-            self._right_ok_pressed)
-
-        # Navigator Wheel
-        self._navigators['left'].wheel_changed.connect(self._left_wheel_moved)
-        self._navigators['right'].wheel_changed.connect(
-            self._right_wheel_moved)
-
-        # Navigator Baxter Button
-        self._navigators['left'].button2_changed.connect(self._enable)
-        self._navigators['right'].button2_changed.connect(self._enable)
-
-        # Navigator Back Button
-        self._navigators['left'].button1_changed.connect(self.back)
-        self._navigators['right'].button1_changed.connect(self.back)
+        self._listeners_connected = False
+        self._connect_listeners()
 
         self._wheel_ok = True
 
@@ -180,6 +165,50 @@ class BrrUi(object):
         self.calib_stage = 0
         self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
+
+    def _connect_listeners(self):
+        # Navigator OK Button
+        self._navigators['left'].button0_changed.connect(self._left_ok_pressed)
+        self._navigators['right'].button0_changed.connect(
+            self._right_ok_pressed)
+
+        # Navigator Wheel
+        self._navigators['left'].wheel_changed.connect(self._left_wheel_moved)
+        self._navigators['right'].wheel_changed.connect(
+            self._right_wheel_moved)
+
+        # Navigator Baxter Button
+        self._navigators['left'].button2_changed.connect(self._enable)
+        self._navigators['right'].button2_changed.connect(self._enable)
+
+        # Navigator Back Button
+        self._navigators['left'].button1_changed.connect(self.back)
+        self._navigators['right'].button1_changed.connect(self.back)
+
+        self._listeners_connected = True
+
+    def _disconnect_listeners(self):
+        # Navigator OK Button
+        self._navigators['left'].button0_changed.disconnect(
+            self._left_ok_pressed)
+        self._navigators['right'].button0_changed.disconnect(
+            self._right_ok_pressed)
+
+        # Navigator Wheel
+        self._navigators['left'].wheel_changed.disconnect(
+            self._left_wheel_moved)
+        self._navigators['right'].wheel_changed.disconnect(
+            self._right_wheel_moved)
+
+        # Navigator Baxter Button
+        self._navigators['left'].button2_changed.disconnect(self._enable)
+        self._navigators['right'].button2_changed.disconnect(self._enable)
+
+        # Navigator Back Button
+        self._navigators['left'].button1_changed.disconnect(self.back)
+        self._navigators['right'].button1_changed.disconnect(self.back)
+
+        self._listeners_connected = False
 
     def _load_config(self):
         f = open(self.conf_path).read()
@@ -430,7 +459,11 @@ class BrrUi(object):
         if v == 1 and not self._status.state().enabled:
             try:
                 self._status.enable()
+                if not self._listeners_connected:
+                    self._connect_listeners()
             except:
+                if self._listeners_connected:
+                    self._disconnect_listeners()
                 self.error_screen('stopped')
                 return False
             if not self._status.state().enabled:
