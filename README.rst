@@ -9,7 +9,7 @@ Code & Tickets
 +-----------------+----------------------------------------------------------------+
 | Documentation   | http://sdk.rethinkrobotics.com/wiki                            |
 +-----------------+----------------------------------------------------------------+
-| Issues          | https://github.com/RethinkRobotics/baxter_demo_ui/issues         |
+| Issues          | https://github.com/RethinkRobotics/baxter_demo_ui/issues       |
 +-----------------+----------------------------------------------------------------+
 | Contributions   | http://sdk.rethinkrobotics.com/wiki/Contributions              |
 +-----------------+----------------------------------------------------------------+
