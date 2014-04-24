@@ -133,6 +133,8 @@ class BrrUi(object):
 
         self._navigators = {'left': Navigator('left'),
                            'right': Navigator('right')}
+
+        self._listeners_connected = False
         self._connect_listeners()
 
         self._wheel_ok = True
