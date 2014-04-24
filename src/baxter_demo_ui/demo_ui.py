@@ -156,7 +156,6 @@ class BrrUi(object):
         self._r_grip = {'interface': Gripper('right'), 'type': 'custom'}
         rospy.Timer(rospy.Duration(.5), self._check_enable)
 
-        self._listeners_connected = True
         self.error_state = False
         self._enable()
         self.calib_stage = 0
