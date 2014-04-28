@@ -126,8 +126,6 @@ class BrrUi(object):
 
         self._status = RobotEnable()
 
-        self._robot_state = False
-        
         self._commands = commands
         self._font = ImageFont.truetype(
                 '%s/HelveticaLight.ttf' % share_path, 30
@@ -140,6 +138,9 @@ class BrrUi(object):
 
         self._listeners_connected = False
         self._connect_listeners()
+
+        self._estop_state = False
+        self._estop_sub = rospy.Subscriber('/robot/state', AssemblyState, self._estop_callback)
 
         self._wheel_ok = True
 
@@ -168,12 +169,15 @@ class BrrUi(object):
         self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
 
-    def _state_callback(self, msg):
+    def _estop_callback(self, msg):
         if self._estop_state != msg.stopped:
+            print 'estop callback'	
             self._estop_state = msg.stopped
             if msg.stopped and self._listeners_connected:
+                print('disconnect listeners')
                 self._disconnect_listeners()
             elif not msg.stopped and not self._listeners_connected:
+                print('connect listeners')
                 self._connect_listeners()
 
     def _connect_listeners(self):
@@ -423,7 +427,7 @@ class BrrUi(object):
         self.ok_pressed(v, 'right')
 
     def ok_pressed(self, v, side):
-        if v == True:
+        if v == False:
             context = self._btn_context[self.selected().name]
             func = self._btn_context[self.selected().name]['function']
             if func == 'Back':
@@ -436,7 +440,8 @@ class BrrUi(object):
                 getattr(self._functions, func)(self, side)
 
     def back(self, v):
-        if v == True:
+        if v == False:
+            print "BACK!"
             self.error_state = False
             if self.active_window.parent:
                 self.kill_examples()
