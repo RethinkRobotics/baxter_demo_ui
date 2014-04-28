@@ -140,7 +140,8 @@ class BrrUi(object):
         self._connect_listeners()
 
         self._estop_state = False
-        self._estop_sub = rospy.Subscriber('/robot/state', AssemblyState, self._estop_callback)
+        self._estop_sub = rospy.Subscriber('/robot/state', AssemblyState,
+                                           self._estop_callback)
 
         self._wheel_ok = True
 
