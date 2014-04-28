@@ -427,7 +427,7 @@ class BrrUi(object):
         self.ok_pressed(v, 'right')
 
     def ok_pressed(self, v, side):
-        if v == False:
+        if v == True:
             context = self._btn_context[self.selected().name]
             func = self._btn_context[self.selected().name]['function']
             if func == 'Back':
@@ -440,7 +440,7 @@ class BrrUi(object):
                 getattr(self._functions, func)(self, side)
 
     def back(self, v):
-        if v == False:
+        if v == True:
             print "BACK!"
             self.error_state = False
             if self.active_window.parent:
