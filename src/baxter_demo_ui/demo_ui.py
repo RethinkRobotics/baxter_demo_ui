@@ -46,6 +46,7 @@ from baxter_interface import (
   Gripper
 )
 from sensor_msgs.msg import Image as ImageMsg
+from baxter_core_msgs.msg import AssemblyState
 
 from .baxter_procs import (
     kill_python_procs,
@@ -124,6 +125,9 @@ class BrrUi(object):
         self.xdisp = rospy.Publisher('/robot/xdisplay', ImageMsg, latch=True)
 
         self._status = RobotEnable()
+
+        self._robot_state = False
+        
         self._commands = commands
         self._font = ImageFont.truetype(
                 '%s/HelveticaLight.ttf' % share_path, 30
@@ -163,6 +167,14 @@ class BrrUi(object):
         self.calib_stage = 0
         self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
+
+    def _state_callback(self, msg):
+        if self._estop_state != msg.stopped:
+            self._estop_state = msg.stopped
+            if msg.stopped and self._listeners_connected:
+                self._disconnect_listeners()
+            elif not msg.stopped and not self._listeners_connected:
+                self._connect_listeners()
 
     def _connect_listeners(self):
         # Navigator OK Button
@@ -457,11 +469,7 @@ class BrrUi(object):
         if v == 1 and not self._status.state().enabled:
             try:
                 self._status.enable()
-                if not self._listeners_connected:
-                    self._connect_listeners()
             except:
-                if self._listeners_connected:
-                    self._disconnect_listeners()
                 self.error_screen('stopped')
                 return False
             if not self._status.state().enabled:

@@ -130,10 +130,8 @@ def play(ui, side):
         if (left_client.wait_for_server(rospy.Duration(1.0)) and
             right_client.wait_for_server(rospy.Duration(1.0))):
             break
-    proc2 = mk_process('rosrun baxter_examples '
+    proc2 = RosProcess('rosrun baxter_examples '
                        'joint_trajectory_file_playback.py -f recording')
-
-    ui.back(True)
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
