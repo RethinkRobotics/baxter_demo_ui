@@ -171,13 +171,10 @@ class BrrUi(object):
 
     def _estop_callback(self, msg):
         if self._estop_state != msg.stopped:
-            print 'estop callback'	
             self._estop_state = msg.stopped
             if msg.stopped and self._listeners_connected:
-                print('disconnect listeners')
                 self._disconnect_listeners()
             elif not msg.stopped and not self._listeners_connected:
-                print('connect listeners')
                 self._connect_listeners()
 
     def _connect_listeners(self):
@@ -441,7 +438,6 @@ class BrrUi(object):
 
     def back(self, v):
         if v == True:
-            print "BACK!"
             self.error_state = False
             if self.active_window.parent:
                 self.kill_examples()
