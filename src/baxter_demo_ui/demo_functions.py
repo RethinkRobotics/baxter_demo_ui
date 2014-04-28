@@ -74,7 +74,8 @@ def cam_head(ui, side):
 
 def camera_disp(ui, cam_side):
     def _display(camera, name):
-        camera.close()
+        for cam in ui.cameras:
+            ui.cameras[cam].close()
         camera.resolution = (640, 400)
         camera.open()
 

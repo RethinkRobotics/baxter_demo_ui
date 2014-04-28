@@ -456,8 +456,6 @@ class BrrUi(object):
         self.selected()._status = 'selected'
         for cmd in self._commands:
             kill_python_procs(cmd)
-        for camera in self.cameras:
-            self.cameras[camera].close()
         if self.cam_sub != None:
             self.cam_sub.unregister()
         self.draw()
