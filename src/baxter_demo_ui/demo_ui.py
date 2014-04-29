@@ -38,6 +38,7 @@ from PIL import (
 
 import rospy
 import rospkg
+from sensor_msgs.msg import Image as ImageMsg
 
 from baxter_interface import (
   Navigator,
@@ -45,7 +46,7 @@ from baxter_interface import (
   CameraController,
   Gripper
 )
-from sensor_msgs.msg import Image as ImageMsg
+from baxter_core_msgs.msg import AssemblyState
 
 from .baxter_procs import (
     kill_python_procs,
@@ -126,6 +127,7 @@ class BrrUi(object):
         self.xdisp = rospy.Publisher('/robot/xdisplay', ImageMsg, latch=True)
 
         self._status = RobotEnable()
+
         self._commands = commands
         self._font = ImageFont.truetype(
                 '%s/HelveticaLight.ttf' % share_path, 30
@@ -138,6 +140,10 @@ class BrrUi(object):
 
         self._listeners_connected = False
         self._connect_listeners()
+
+        self._estop_state = False
+        self._estop_sub = rospy.Subscriber('robot/state', AssemblyState,
+                                           self._estop_callback)
 
         self._wheel_ok = True
 
@@ -165,6 +171,14 @@ class BrrUi(object):
         self.calib_stage = 0
         self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
+
+    def _estop_callback(self, msg):
+        if self._estop_state != msg.stopped:
+            self._estop_state = msg.stopped
+            if msg.stopped and self._listeners_connected:
+                self._disconnect_listeners()
+            elif not msg.stopped and not self._listeners_connected:
+                self._connect_listeners()
 
     def _connect_listeners(self):
         # Navigator OK Button
@@ -444,8 +458,6 @@ class BrrUi(object):
         self.selected()._status = 'selected'
         for cmd in self._commands:
             kill_python_procs(cmd)
-        for camera in self.cameras:
-            self.cameras[camera].close()
         if self.cam_sub != None:
             self.cam_sub.unregister()
         self.draw()
@@ -459,11 +471,7 @@ class BrrUi(object):
         if v == 1 and not self._status.state().enabled:
             try:
                 self._status.enable()
-                if not self._listeners_connected:
-                    self._connect_listeners()
             except:
-                if self._listeners_connected:
-                    self._disconnect_listeners()
                 self.error_screen('stopped')
                 return False
             if not self._status.state().enabled:
@@ -479,7 +487,7 @@ class BrrUi(object):
             error_screen = '%s_error' % error
             if self.active_window.name.startswith('run'):
                 new_parent = self.active_window.parent
-            else:
+            elif not self.active_window.name.endswith('_error'):
                 new_parent = self.active_window.name
             self._btn_context['%s_OK' % error]['nextWindow'] = new_parent
             self.windows[error_screen].parent = new_parent

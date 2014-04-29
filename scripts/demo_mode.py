@@ -55,7 +55,7 @@ def main():
     conf_path = '%s/config.json' % pack_path
 
     commands = ['baxter_interface', 'record', 'playback', 'puppet',
-                'tare', 'calibrate']
+                'tare', 'calibrate', 'joint_trajectory']
     ui = BrrUi(pack_path, conf_path, commands)
     check_calib(ui)
 

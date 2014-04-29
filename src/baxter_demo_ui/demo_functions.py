@@ -76,7 +76,8 @@ def cam_head(ui, side):
 
 def camera_disp(ui, cam_side):
     def _display(camera, name):
-        camera.close()
+        for cam in ui.cameras:
+            ui.cameras[cam].close()
         camera.resolution = (640, 400)
         camera.open()
 
@@ -132,10 +133,8 @@ def play(ui, side):
         if (left_client.wait_for_server(rospy.Duration(1.0)) and
             right_client.wait_for_server(rospy.Duration(1.0))):
             break
-    proc2 = mk_process('rosrun baxter_examples '
+    proc2 = RosProcess('rosrun baxter_examples '
                        'joint_trajectory_file_playback.py -f recording')
-
-    ui.back(True)
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
