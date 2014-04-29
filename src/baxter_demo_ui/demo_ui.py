@@ -38,6 +38,7 @@ from PIL import (
 
 import rospy
 import rospkg
+from sensor_msgs.msg import Image as ImageMsg
 
 from baxter_interface import (
   Navigator,
@@ -45,7 +46,6 @@ from baxter_interface import (
   CameraController,
   Gripper
 )
-from sensor_msgs.msg import Image as ImageMsg
 from baxter_core_msgs.msg import AssemblyState
 
 from .baxter_procs import (
@@ -140,7 +140,7 @@ class BrrUi(object):
         self._connect_listeners()
 
         self._estop_state = False
-        self._estop_sub = rospy.Subscriber('/robot/state', AssemblyState,
+        self._estop_sub = rospy.Subscriber('robot/state', AssemblyState,
                                            self._estop_callback)
 
         self._wheel_ok = True
