@@ -485,7 +485,7 @@ class BrrUi(object):
             error_screen = '%s_error' % error
             if self.active_window.name.startswith('run'):
                 new_parent = self.active_window.parent
-            else:
+            elif not self.active_window.name.endswith('_error'):
                 new_parent = self.active_window.name
             self._btn_context['%s_OK' % error]['nextWindow'] = new_parent
             self.windows[error_screen].parent = new_parent
