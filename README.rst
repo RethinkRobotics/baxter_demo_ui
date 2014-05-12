@@ -26,7 +26,7 @@ baxter_demo_ui Repository Overview
      |
      +-- src/                  demo UI classes
      |
-     +-- share/               shared UI resources
+     +-- share/                shared UI resources
 
 
 Other Baxter Repositories
