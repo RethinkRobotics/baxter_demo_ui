@@ -60,6 +60,8 @@ from .img_proc import (
 #                          as selectable
 # **play(ui, side) - Runs joint_trajectory_file_playback on a recorded file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def cam_right(ui, side):
     camera_disp(ui, 'right_hand')
 
@@ -74,7 +76,8 @@ def cam_head(ui, side):
 
 def camera_disp(ui, cam_side):
     def _display(camera, name):
-        camera.close()
+        for cam in ui.cameras:
+            ui.cameras[cam].close()
         camera.resolution = (640, 400)
         camera.open()
 
@@ -124,16 +127,14 @@ def play(ui, side):
     )
     while True:
         proc1 = RosProcess('rosrun baxter_interface '
-                           'joint_trajectory_action_server.py &')
+                           'joint_trajectory_action_server.py -m velocity &')
         proc1.run()
         rospy.sleep(1)
         if (left_client.wait_for_server(rospy.Duration(1.0)) and
             right_client.wait_for_server(rospy.Duration(1.0))):
             break
-    proc2 = mk_process('rosrun baxter_examples '
+    proc2 = RosProcess('rosrun baxter_examples '
                        'joint_trajectory_file_playback.py -f recording')
-
-    ui.back(True)
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,6 +156,8 @@ def play(ui, side):
 #                            0 -> tare.py
 #                            1 -> calibrate_arm.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def reboot(ui=None, side=None):
     mk_process('sudo shutdown -r now')
 
@@ -181,6 +184,8 @@ def shutdown(ui=None, side=None):
 #   and will not navigate to the run_calib screen.  It will just call
 #   cailb() which will note the stage, and simply delete the stage file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 def calib(ui, side=None):
     if ui.calib_stage < 2:
         run_calibs(ui)
@@ -197,6 +202,7 @@ def run_calibs(ui):
     f = open('/var/tmp/hlr/demo_calib.txt', 'w')
     f.write('stage %s' % (ui.calib_stage + 1))
     reboot()
+
 
 def run_calib(stage, side):
     if stage == 0:

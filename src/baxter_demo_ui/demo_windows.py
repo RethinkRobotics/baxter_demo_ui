@@ -35,6 +35,7 @@ from PIL import (
   ImageFont
 )
 import rospkg
+import rospy
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +69,8 @@ import rospkg
 #                                 in this window in the given direction
 #                                 that is selectable.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 class BrrWindow(object):
     def __init__(self, window_data, buttons, share_path):
         self.name = window_data['name']
@@ -158,7 +161,7 @@ class BrrWindow(object):
         self.get_btn(name).selectable = sel
 
     def scroll(self, direction):
-        rospy.loginfo('--@scroll():  direction=%s' % direction)
+        rospy.logdebug('--@scroll():  direction=%s' % direction)
         if not self._no_scroll:
             i = self._selected_btn_index + direction
             while (i >= 0 and i < len(self._buttons)):

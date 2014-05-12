@@ -38,6 +38,7 @@ from PIL import (
 
 import rospy
 import rospkg
+from sensor_msgs.msg import Image as ImageMsg
 
 from baxter_interface import (
   Navigator,
@@ -45,7 +46,7 @@ from baxter_interface import (
   CameraController,
   Gripper
 )
-from sensor_msgs.msg import Image as ImageMsg
+from baxter_core_msgs.msg import AssemblyState
 
 from .baxter_procs import (
     kill_python_procs,
@@ -109,6 +110,8 @@ import demo_functions
 #                                Sets the error window's parent to preserve
 #                                    "back" functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 class BrrUi(object):
     def __init__(self, share_path, conf_path, commands):
         self.share_path = share_path
@@ -124,6 +127,7 @@ class BrrUi(object):
         self.xdisp = rospy.Publisher('/robot/xdisplay', ImageMsg, latch=True)
 
         self._status = RobotEnable()
+
         self._commands = commands
         self._font = ImageFont.truetype(
                 '%s/HelveticaLight.ttf' % share_path, 30
@@ -134,23 +138,12 @@ class BrrUi(object):
         self._navigators = {'left': Navigator('left'),
                            'right': Navigator('right')}
 
-        # Navigator OK Button
-        self._navigators['left'].button0_changed.connect(self._left_ok_pressed)
-        self._navigators['right'].button0_changed.connect(
-            self._right_ok_pressed)
+        self._listeners_connected = False
+        self._connect_listeners()
 
-        # Navigator Wheel
-        self._navigators['left'].wheel_changed.connect(self._left_wheel_moved)
-        self._navigators['right'].wheel_changed.connect(
-            self._right_wheel_moved)
-
-        # Navigator Baxter Button
-        self._navigators['left'].button2_changed.connect(self._enable)
-        self._navigators['right'].button2_changed.connect(self._enable)
-
-        # Navigator Back Button
-        self._navigators['left'].button1_changed.connect(self.back)
-        self._navigators['right'].button1_changed.connect(self.back)
+        self._estop_state = False
+        self._estop_sub = rospy.Subscriber('robot/state', AssemblyState,
+                                           self._estop_callback)
 
         self._wheel_ok = True
 
@@ -178,6 +171,58 @@ class BrrUi(object):
         self.calib_stage = 0
         self.draw()
         mk_process('rosrun baxter_tools tuck_arms.py -u')
+
+    def _estop_callback(self, msg):
+        if self._estop_state != msg.stopped:
+            self._estop_state = msg.stopped
+            if msg.stopped and self._listeners_connected:
+                self._disconnect_listeners()
+            elif not msg.stopped and not self._listeners_connected:
+                self._connect_listeners()
+
+    def _connect_listeners(self):
+        # Navigator OK Button
+        self._navigators['left'].button0_changed.connect(self._left_ok_pressed)
+        self._navigators['right'].button0_changed.connect(
+            self._right_ok_pressed)
+
+        # Navigator Wheel
+        self._navigators['left'].wheel_changed.connect(self._left_wheel_moved)
+        self._navigators['right'].wheel_changed.connect(
+            self._right_wheel_moved)
+
+        # Navigator Baxter Button
+        self._navigators['left'].button2_changed.connect(self._enable)
+        self._navigators['right'].button2_changed.connect(self._enable)
+
+        # Navigator Back Button
+        self._navigators['left'].button1_changed.connect(self.back)
+        self._navigators['right'].button1_changed.connect(self.back)
+
+        self._listeners_connected = True
+
+    def _disconnect_listeners(self):
+        # Navigator OK Button
+        self._navigators['left'].button0_changed.disconnect(
+            self._left_ok_pressed)
+        self._navigators['right'].button0_changed.disconnect(
+            self._right_ok_pressed)
+
+        # Navigator Wheel
+        self._navigators['left'].wheel_changed.disconnect(
+            self._left_wheel_moved)
+        self._navigators['right'].wheel_changed.disconnect(
+            self._right_wheel_moved)
+
+        # Navigator Baxter Button
+        self._navigators['left'].button2_changed.disconnect(self._enable)
+        self._navigators['right'].button2_changed.disconnect(self._enable)
+
+        # Navigator Back Button
+        self._navigators['left'].button1_changed.disconnect(self.back)
+        self._navigators['right'].button1_changed.disconnect(self.back)
+
+        self._listeners_connected = False
 
     def _load_config(self):
         f = open(self.conf_path).read()
@@ -225,16 +270,16 @@ class BrrUi(object):
             name = error['name']
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                      '%s_OK' % name,  #name
-                                      [200, 60],  #size
-                                      errors['OK']['offset'],  #button offset
-                                      0,  #index
-                                      None,  #icon prefix
-                                      "Wide",  #button type
-                                      [0, 0],  #icon offset
-                                      "OK",  #label
-                                      16,  #label y-offset
-                                      True,  #selectable?
+                                      '%s_OK' % name,  # name
+                                      [200, 60],  # size
+                                      errors['OK']['offset'],  # button offset
+                                      0,  # index
+                                      None,  # icon prefix
+                                      "Wide",  # button type
+                                      [0, 0],  # icon offset
+                                      "OK",  # label
+                                      16,  # label y-offset
+                                      True,  # selectable?
                                       self.share_path
                                      )
             self._btn_context["%s_OK" % name] = {
@@ -265,16 +310,16 @@ class BrrUi(object):
 
             buttons = dict()
             buttons['OK'] = BrrButton(
-                                      '%s_OK' % name,  #name
-                                      [200, 60],  #size
-                                      conf['OK']['offset'],  #button offset
-                                      1,  #index
-                                      None,  #icon prefix
-                                      "Wide",  #button type
-                                      [0, 0],  #icon offset
-                                      win['conf_text'],  #label
-                                      16,  #label y-offset
-                                      True,  #selectable?
+                                      '%s_OK' % name,  # name
+                                      [200, 60],  # size
+                                      conf['OK']['offset'],  # button offset
+                                      1,  # index
+                                      None,  # icon prefix
+                                      "Wide",  # button type
+                                      [0, 0],  # icon offset
+                                      win['conf_text'],  # label
+                                      16,  # label y-offset
+                                      True,  # selectable?
                                       self.share_path)
             self._btn_context['%s_OK' % name] = {
                                         'nextWindow': win['nextWindow'],
@@ -322,7 +367,6 @@ class BrrUi(object):
 
     def draw(self):
         img = Image.new('RGB', (1024, 600), 'white')
-        rospy.loginfo('--@UI.draw():  window = %s' % self.active_window.name)
         img = gen_cv(self._draw_window(img, self.active_window.name))
         self.img = img
         msg = cv_to_msg(img)
@@ -414,8 +458,6 @@ class BrrUi(object):
         self.selected()._status = 'selected'
         for cmd in self._commands:
             kill_python_procs(cmd)
-        for camera in self.cameras:
-            self.cameras[camera].close()
         if self.cam_sub != None:
             self.cam_sub.unregister()
         self.draw()
@@ -445,7 +487,7 @@ class BrrUi(object):
             error_screen = '%s_error' % error
             if self.active_window.name.startswith('run'):
                 new_parent = self.active_window.parent
-            else:
+            elif not self.active_window.name.endswith('_error'):
                 new_parent = self.active_window.name
             self._btn_context['%s_OK' % error]['nextWindow'] = new_parent
             self.windows[error_screen].parent = new_parent
@@ -455,16 +497,3 @@ class BrrUi(object):
     def _enable_cuff(self):
         if len(python_proc_ids('gripper_cuff_control')) == 0:
             RosProcess('rosrun baxter_examples gripper_cuff_control.py')
-
-    def _update_grippers(self, event):
-        new_l = self._l_grip['interface'].type()
-        new_r = self._r_grip['interface'].type()
-        if new_l != self._l_grip['type']:
-            self._l_grip['type'] = new_l
-            if new_l == 'electric':
-                self._l_grip['interface'].calibrate()
-        if new_r != self._r_grip['type']:
-            self._r_grip['type'] = new_r
-            if new_r == 'electric':
-                self._r_grip['interface'].calibrate()
-        self._enable_cuff()

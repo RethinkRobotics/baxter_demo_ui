@@ -218,7 +218,14 @@
                 "offset": [25, 130],
                 "icon_offset": [0, 20],
                 "size": [112, 114]
-            }
+            },
+            "images": [
+                {
+                    "file": "RecordInfo",
+                    "offset": [150, 100],
+                    "size": [856, 459]
+                }
+            ]
         },
         {
             "name": "run_playback",
@@ -244,7 +251,14 @@
                 "offset": [25, 130],
                 "icon_offset": [0, 20],
                 "size": [112, 114]
-            }
+            },
+            "images": [
+                {
+                    "file": "RecordInfo",
+                    "offset": [150, 100],
+                    "size": [856, 459]
+                }
+            ]
         },
         {
             "name": "run_calib",
