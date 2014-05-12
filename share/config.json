@@ -1,0 +1,429 @@
+{
+    "Back": {
+        "icon_prefix": "Back"
+    },
+    "Windows": [
+        {
+            "name": "demo_1",
+            "bg": "Panels_Main",
+            "offset": [0, 0],
+            "parent": false,
+            "no_scroll": false,
+            "default": "puppet",
+            "back": false,
+            "Buttons": [
+                {
+                    "name": "puppet",
+                    "size": [267, 221],
+                    "offset": [80, 150],
+                    "function": "puppet",
+                    "icon_prefix": "Puppet",
+                    "button": "Main",
+                    "icon_offset": [50, 0],
+                    "selectable": true,
+                    "index": 0,
+                    "label": "Arm Puppet",
+                    "label_y": 160,
+                    "nextWindow": "run_puppet"
+                },
+                {
+                    "name": "camera",
+                    "size": [267, 221],
+                    "offset": [380, 150],
+                    "function": null,
+                    "icon_prefix": "Camera",
+                    "button": "Main",
+                    "icon_offset": [50, 0],
+                    "selectable": true,
+                    "label": "Camera",
+                    "label_y": 160,
+                    "nextWindow": "cam_submenu",
+                    "index": 1
+                },
+                {
+                    "name": "rec_option",
+                    "size": [267, 221],
+                    "offset": [680, 150],
+                    "function": null,
+                    "icon_prefix": "Record",
+                    "button": "Main",
+                    "icon_offset": [50, 0],
+                    "selectable": true,
+                    "index": 2,
+                    "label": "Record/ Playback",
+                    "label_y": 160,
+                    "nextWindow": "record_submenu"
+                },
+                {
+                    "name": "more_options",
+                    "size": [72, 67],
+                    "offset": [950, 10],
+                    "function": null,
+                    "icon_prefix": "Small_MoreOptions",
+                    "button": "TopSmall_Narrow",
+                    "icon_offset": [-15, 0],
+                    "selectable": true,
+                    "label": "",
+                    "label_y": 0,
+                    "index": 4,
+                    "nextWindow": "more_options_menu"
+                },
+                {
+                    "name": "help",
+                    "size": [72, 67],
+                    "offset": [850, 10],
+                    "function": null,
+                    "icon_prefix": "Small_Help",
+                    "button": "TopSmall",
+                    "icon_offset": [-15, 0],
+                    "selectable": true,
+                    "label": "",
+                    "label_y": 0,
+                    "index": 3,
+                    "nextWindow": "help_menu"
+                }
+            ]
+        },
+        {
+            "name": "cam_submenu",
+            "bg": "Panels_SubMenu_3Items",
+            "offset": [40, 350],
+            "parent": "demo_1",
+            "no_scroll": false,
+            "default": "camera_left",
+            "back": {
+                "offset": [25, 30],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            },
+            "Buttons": [
+                {
+                    "name": "cam_left_hand",
+                    "size": [232, 191],
+                    "offset": [675, 30],
+                    "function": "cam_left",
+                    "label": "Left Arm Camera",
+                    "icon_prefix": "LeftCamera",
+                    "button": "Inner",
+                    "icon_offset": [30, 0],
+                    "window": "cam_submenu",
+                    "selectable": true,
+                    "label": "Left Hand",
+                    "label_y": 140,
+                    "index": 3,
+                    "nextWindow": "run_camera"
+                },
+                {
+                    "name": "cam_right_hand",
+                    "size": [232, 191],
+                    "offset": [175, 30],
+                    "function": "cam_right",
+                    "label": "Right Arm Camera",
+                    "icon_prefix": "RightCamera",
+                    "button": "Inner",
+                    "icon_offset": [30, 0],
+                    "window": "cam_submenu",
+                    "selectable": true,
+                    "label": "Right Hand",
+                    "label_y": 140,
+                    "index": 1,
+                    "nextWindow": "run_camera"
+                },
+                {
+                    "name": "cam_head",
+                    "size": [232, 191],
+                    "offset": [425, 30],
+                    "function": "cam_head",
+                    "label": "Head Camera",
+                    "icon_prefix": "HeadCamera",
+                    "button": "Inner",
+                    "icon_offset": [30, 0],
+                    "window": "cam_submenu",
+                    "selectable": true,
+                    "label": "Head",
+                    "label_y": 140,
+                    "index": 2,
+                    "nextWindow": "run_camera"
+                }
+            ]
+        },
+        {
+            "name": "record_submenu",
+            "bg": "Panels_SubMenu_2Items",
+            "offset": [140, 350],
+            "parent": "demo_1",
+            "no_scroll": false,
+            "default": "record",
+            "back": {
+                "offset": [25, 30],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            },
+            "Buttons": [
+                {
+                    "name": "record",
+                    "size": [232, 191],
+                    "offset": [180, 30],
+                    "function": "record",
+                    "label": "Record",
+                    "icon_prefix": "Record",
+                    "button": "Inner",
+                    "icon_offset": [30, 0],
+                    "window": "record_submenu",
+                    "selectable": true,
+                    "label": "Record",
+                    "label_y": 140,
+                    "index": 1,
+                    "nextWindow": "run_record"
+                },
+                {
+                    "name": "play",
+                    "size": [232, 191],
+                    "offset": [430, 30],
+                    "function": "play",
+                    "label": "Play",
+                    "icon_prefix": "Play",
+                    "button": "Inner",
+                    "icon_offset": [30, 0],
+                    "window": "record_submenu",
+                    "selectable": false,
+                    "label": "Play",
+                    "label_y": 140,
+                    "index": 2,
+                    "nextWindow": "run_playback"
+                }
+            ]
+        },
+        {
+            "name": "run_camera",
+            "bg": "Panels_Inner",
+            "offset": [0, 0],
+            "parent": "cam_submenu",
+            "no_scroll": true,
+            "default": "run_camera_back",
+            "back": {
+                "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            }
+        },
+        {
+            "name": "run_record",
+            "bg": "Panels_Inner",
+            "offset": [0, 0],
+            "parent": "record_submenu",
+            "no_scroll": true,
+            "default": "run_record_back",
+            "back": {
+                "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            },
+            "images": [
+                {
+                    "file": "RecordInfo",
+                    "offset": [150, 100],
+                    "size": [856, 459]
+                }
+            ]
+        },
+        {
+            "name": "run_playback",
+            "bg": "Panels_Inner",
+            "offset": [0, 0],
+            "parent": "record_submenu",
+            "no_scroll": true,
+            "default": "run_playback_back",
+            "back": {
+                "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            }
+        },
+        {
+            "name": "run_puppet",
+            "bg": "Panels_Inner",
+            "offset": [0, 0],
+            "parent": "demo_1",
+            "no_scroll": true,
+            "default": "run_puppet_back",
+            "back": {
+                "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            },
+            "images": [
+                {
+                    "file": "RecordInfo",
+                    "offset": [150, 100],
+                    "size": [856, 459]
+                }
+            ]
+        },
+        {
+            "name": "run_calib",
+            "bg": "Panels_Inner",
+            "offset": [0, 0],
+            "parent": "more_options_menu",
+            "no_scroll": true,
+            "default": "run_calib_back",
+            "back": {
+                "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            },
+            "text": [
+                {"text": "This robot is calibrating",
+                 "text_y": 150},
+                {"text": "Please do not interact with it at this time",
+                 "text_y": 200}
+            ]
+        },
+{
+            "name": "more_options_menu",
+            "bg": "Panels_Main",
+            "offset": [0, 0],
+            "parent": "demo_1",
+            "no_scroll": false,
+            "default": "more_options_menu_back",
+            "back": {
+                "offset": [25, 130],
+                "icon_offset": [0, 20],
+                "icon_offset": [0, 20],
+                "size": [112, 114]
+            },
+            "Buttons": [
+                {
+                    "name": "shutdown",
+                    "size": [354, 91],
+                    "offset": [380, 150],
+                    "function": "shutdown",
+                    "label": "Shutdown",
+                    "icon_prefix": null,
+                    "button": "Wide",
+                    "icon_offset": [0, 0],
+                    "window": "more_options_menu",
+                    "selectable": true,
+                    "label": "Shutdown",
+                    "label_y": 30,
+                    "index": 1,
+                    "nextWindow": "demo_1"
+                },
+                {
+                    "name": "reboot",
+                    "size": [354, 91],
+                    "offset": [380, 270],
+                    "function": "reboot",
+                    "label": "Reboot",
+                    "icon_prefix": null,
+                    "button": "Wide",
+                    "icon_offset": [0, 0],
+                    "window": "more_options_menu",
+                    "selectable": true,
+                    "label": "Reboot",
+                    "label_y": 30,
+                    "index": 2,
+                    "nextWindow": "demo_1"
+                },
+                {
+                    "name": "tare",
+                    "size": [354, 91],
+                    "offset": [380, 390],
+                    "function": null,
+                    "label": "Tare / Calibrate",
+                    "icon_prefix": null,
+                    "button": "Wide",
+                    "icon_offset": [0, 0],
+                    "window": "more_options_menu",
+                    "selectable": true,
+                    "label": "Tare/Calibrate",
+                    "label_y": 30, 
+                    "index": 3,
+                    "nextWindow": "start_calib_conf"
+                }
+            ]
+        },
+        {
+            "name": "help_menu",
+            "bg": "Panels_Inner",
+            "offset": [0, 0],
+            "parent": "demo_1",
+            "no_scroll": true,
+            "default": "help_menu_back",
+            "back": {
+                "offset": [25, 10],
+                "icon_offset": [0, 5],
+                "size": [112, 70]
+            },
+            "images": [
+                {
+                    "file": "RecordInfo",
+                    "offset": [50, 100],
+                    "size": [956, 459]
+                }
+            ]
+        }
+    ],
+    "Error": {
+        "bg": "Panels_Popup",
+        "offset": [200, 100],
+        "OK" : {
+            "button": "Wide",
+            "offset": [450, 225]
+        },
+        "errors": [
+            {
+                "name": "stopped",
+                "text": "The robot is stopped",
+                "text_y": 250
+            },
+            {
+                "name": "no_enable",
+                "text": "The robot could not be enabled",
+                "text_y": 250
+            }
+        ]
+    },
+    "Confirmation": {
+        "bg": "Panels_Popup",
+        "offset": [200, 150],
+        "Windows": [
+            {
+                "name": "start_calib",
+                "messages": [
+                    {"text": "The robot is about to run its calibration routine.",
+                     "text_y": 200},
+                    {"text": "Please make sure the area around the robot is clear",
+                     "text_y": 250},
+                    {"text": "and that it does not have any grippers attached.",
+                     "text_y": 300}
+                ],
+                "conf_text": "OK",
+                "function": "calib",
+                "nextWindow": "run_calib",
+                "parent": "more_options_menu"
+           },
+           {
+                "name": "retry_calib",
+                "messages": [
+                    {"text": "The robot failed its calibration.",
+                     "text_y": 200},
+                    {"text": "Please make sure the area around the robot is clear",
+                     "text_y": 250},
+                    {"text": "and that it does not have any grippers attached.",
+                     "text_y": 300}
+                ],
+                "conf_text": "Retry",
+                "function": "calib",
+                "nextWindow": "run_calib",
+                "parent": "more_options_menu"
+           }
+        ],
+        "OK": {
+            "offset": [400, 250]
+        },
+        "Cancel": {
+            "offset": [100, 250]
+        }
+    }
+}
