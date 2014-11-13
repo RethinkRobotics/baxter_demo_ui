@@ -27,17 +27,18 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import cv
+import cv2
 import cv_bridge
 import PIL
+import numpy as np
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# PIL/cv interaction
+# PIL/cv2 interaction
 # The functions in this secion handle interactions between
 #   PIL and cvmat formats.
 # **gen_msg() converts an RGB PIL image to a BGR cvmat image
-# **rgb_to_bgr() converts an RGB PIL image to a BGR PIL image
+# **rgb_to_bgr() converts a RGB PIL image to a BGR PIL image
 # **PIL_to_cv() converts a BGR PIL image to a cvmat image
 # **cv_to_msg() converts a cvmat image to a rosmsg format
 # **msg_to_cv() converts a rosmsg image to a cvmat image
@@ -61,23 +62,24 @@ def rgb_to_bgr(img):
 
 
 def PIL_to_cv(img):
-    ci = cv.CreateImage((1024, 600), cv.IPL_DEPTH_8U, 3)
-    cv.SetData(ci, img.tostring(), 3072)
-    return ci
+    return np.array(img)
 
 
 def cv_to_msg(img):
-    return cv_bridge.CvBridge().cv_to_imgmsg(img, encoding='bgr8')
+    return cv_bridge.CvBridge().cv2_to_imgmsg(img, encoding='bgr8')
 
 
 def msg_to_cv(img):
-    return cv_bridge.CvBridge().imgmsg_to_cv(img, desired_encoding='bgr8')
+    return cv_bridge.CvBridge().imgmsg_to_cv2(img, desired_encoding='bgr8')
 
 
 def overlay(old_img, new_img, original_size, new_rect):
-    tmp = cv.CreateImage(original_size, cv.IPL_DEPTH_8U, 3)
-    cv.Copy(old_img, tmp)
-    sub = cv.GetSubRect(tmp, new_rect)
-    cv_img = msg_to_cv(new_img)
-    cv.Copy(cv_img, sub)
+    import pdb; pdb.set_trace()
+    #tmp = cv.CreateImage(original_size, cv.IPL_DEPTH_8U, 3)
+    #cv.Copy(old_img, tmp)
+    #sub = cv.GetSubRect(tmp, new_rect)
+    #cv_img = msg_to_cv(new_img)
+    #cv.Copy(cv_img, sub)
+    tmp = np.copy(old_img)
+    tmp[new_rect[1]:new_rect[3], new_rect[0]:new_rect[2]] = msg_to_cv(new_img)
     return cv_to_msg(tmp)
