@@ -76,13 +76,13 @@ def cam_head(ui, side):
 
 def camera_disp(ui, cam_side):
     def _display(camera, name):
-        for cam in ui.cameras:
-            ui.cameras[cam].close()
+        #for cam in ui.cameras:
+        #    ui.cameras[cam].close()
         camera.resolution = (640, 400)
         camera.open()
 
     def _cam_to_screen(msg):
-        newMsg = overlay(ui.img, msg, (1024, 600), (205, 140, 640, 400))
+        newMsg = overlay(ui.img, msg, x_img_start=205, y_img_start=140)
         ui.xdisp.publish(newMsg)
 
     ui.cam_sub = rospy.Subscriber(

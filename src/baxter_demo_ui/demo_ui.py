@@ -125,7 +125,7 @@ class BrrUi(object):
         self.img = Image.new('RGB', (1024, 600), 'white')
         self.active_window = self.windows['demo_1']
         self.xdisp = rospy.Publisher('/robot/xdisplay', ImageMsg,
-                                     latch=True, queue_size=10)
+                                     latch=True, queue_size=1)
 
         self._status = RobotEnable()
 

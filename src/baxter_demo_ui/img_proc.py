@@ -73,13 +73,14 @@ def msg_to_cv(img):
     return cv_bridge.CvBridge().imgmsg_to_cv2(img, desired_encoding='bgr8')
 
 
-def overlay(old_img, new_img, original_size, new_rect):
-    import pdb; pdb.set_trace()
-    #tmp = cv.CreateImage(original_size, cv.IPL_DEPTH_8U, 3)
-    #cv.Copy(old_img, tmp)
-    #sub = cv.GetSubRect(tmp, new_rect)
-    #cv_img = msg_to_cv(new_img)
-    #cv.Copy(cv_img, sub)
+def overlay(old_img, new_img, x_img_start=0, y_img_start=0):
+    # Copy out the original image
     tmp = np.copy(old_img)
-    tmp[new_rect[1]:new_rect[3], new_rect[0]:new_rect[2]] = msg_to_cv(new_img)
+    sub = msg_to_cv(new_img)
+    # Guard against running over the bounds of temp image
+    y_img_end = min(y_img_start + sub.shape[0], tmp.shape[0])
+    y_delta = y_img_end - y_img_start
+    x_img_end = min(x_img_start + sub.shape[1], tmp.shape[1])
+    x_delta = x_img_end - x_img_start
+    tmp[y_img_start:y_img_end, x_img_start:x_img_end] = sub[:y_delta,:x_delta]
     return cv_to_msg(tmp)
