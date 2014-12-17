@@ -76,15 +76,16 @@ def cam_head(ui, side):
 
 def camera_disp(ui, cam_side):
     def _display(camera, name):
-        camera_name = name.split('_camera')[0]
-        other_cameras = [cam for cam in ui.cameras if camera_name != cam]
+        other_cameras = [cam for cam in ui.cameras if name != cam]
         if other_cameras:
             ui.cameras[other_cameras.pop()].close()
         camera.resolution = (640, 400)
         camera.open()
 
     def _cam_to_screen(msg):
-        newMsg = overlay(ui.img, msg, x_overlay_offset=205, y_overlay_offset=140)
+        newMsg = overlay(ui.img, msg,
+                         x_overlay_offset=205,
+                         y_overlay_offset=140)
         ui.xdisp.publish(newMsg)
 
     ui.cam_sub = rospy.Subscriber(
@@ -93,7 +94,7 @@ def camera_disp(ui, cam_side):
         _cam_to_screen)
 
     camera = ui.cameras[cam_side]
-    _display(camera, '%s_camera' % cam_side)
+    _display(camera, cam_side)
 
 
 def springs(ui, side):
