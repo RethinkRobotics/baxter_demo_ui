@@ -149,17 +149,27 @@ class BrrUi(object):
         self._wheel_ok = True
 
         self.cameras = dict()
-        for cam in ['left_hand', 'right_hand', 'head']:
+        self._camera_list = ['left_hand', 'right_hand', 'head']
+        last_cam = self._camera_list[-1]
+        for cam in self._camera_list:
             try:
                 self.cameras[cam] = CameraController('%s_camera' % cam)
+                last_cam = cam
             except AttributeError:
-                self.windows['cam_submenu'].set_btn_selectable('cam_%s' % cam,
+                try:
+                    # This camera might not be powered
+                    # Turn off the power to the last camera
+                    CameraController('%s_camera' % last_cam).close()
+                    # And try again to locate the camera service
+                    self.cameras[cam] = CameraController('%s_camera' % cam)
+                except AttributeError:
+                    self.windows['cam_submenu'].set_btn_selectable('cam_%s' % cam,
                                                                False)
-                sel = self.windows['cam_submenu'].selected_btn()
-                bad_cam = self.windows['cam_submenu'].get_btn('cam_%s' % cam)
-                if (sel == bad_cam and
-                    not self.windows['cam_submenu'].scroll(1)):
-                    self.windows['cam_submenu'].selected_btn_index = 0
+                    sel = self.windows['cam_submenu'].selected_btn()
+                    bad_cam = self.windows['cam_submenu'].get_btn('cam_%s' % cam)
+                    if (sel == bad_cam and
+                          not self.windows['cam_submenu'].scroll(1)):
+                        self.windows['cam_submenu'].selected_btn_index = 0
 
         self.cam_sub = None
 
