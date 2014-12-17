@@ -42,10 +42,11 @@ import numpy as np
 # **PIL_to_cv() converts a BGR PIL image to a cvmat image
 # **cv_to_msg() converts a cvmat image to a rosmsg format
 # **msg_to_cv() converts a rosmsg image to a cvmat image
-# **overlay() takes an original image, the size of that image,
-#    a rectangle defined in that original image, and a new
-#    new image and returns the original image with the new
-#    image overlayed in the defined rectangle.
+# **overlay() takes an original image, a new image, and an
+#    x, y offset as the origin position for the upper left 
+#    hand corner (0,0) in terms of the original image
+#    and returns the original image with the new image 
+#    overlayed in the defined rectangle.
 #    For the moment, this is mainly used for the Camera
 #       Display demo, overlaying the selected camera's image
 #       onto the UI display
@@ -73,14 +74,25 @@ def msg_to_cv(img):
     return cv_bridge.CvBridge().imgmsg_to_cv2(img, desired_encoding='bgr8')
 
 
-def overlay(old_img, new_img, x_img_start=0, y_img_start=0):
+def overlay(old_img, new_img, x_overlay_offset=0, y_overlay_offset=0):
+    """
+    # Overlays the ROS message new_img on top of the opencv2 old_img
+    # using the following coordinate system to map the new_img's
+    # origin (0,0) to an (x,y) position on the old image.
+    # The coordinate frame for both images the opencv2 standard:
+    # 0-->
+    # |  x
+    # v y
+    """
     # Copy out the original image
     tmp = np.copy(old_img)
+    # Convert the new image ROS message to an opencv2 image
     sub = msg_to_cv(new_img)
     # Guard against running over the bounds of temp image
-    y_img_end = min(y_img_start + sub.shape[0], tmp.shape[0])
-    y_delta = y_img_end - y_img_start
-    x_img_end = min(x_img_start + sub.shape[1], tmp.shape[1])
-    x_delta = x_img_end - x_img_start
-    tmp[y_img_start:y_img_end, x_img_start:x_img_end] = sub[:y_delta,:x_delta]
+    y_overlay_end = min(y_overlay_offset + sub.shape[0], tmp.shape[0])
+    y_delta = y_overlay_end - y_overlay_offset
+    x_overlay_end = min(x_overlay_offset + sub.shape[1], tmp.shape[1])
+    x_delta = x_overlay_end - x_overlay_offset
+    # Insert the image in overlay location
+    tmp[y_overlay_offset:y_overlay_end, x_overlay_offset:x_overlay_end] = sub[:y_delta,:x_delta]
     return cv_to_msg(tmp)

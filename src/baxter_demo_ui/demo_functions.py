@@ -82,7 +82,7 @@ def camera_disp(ui, cam_side):
         camera.open()
 
     def _cam_to_screen(msg):
-        newMsg = overlay(ui.img, msg, x_img_start=205, y_img_start=140)
+        newMsg = overlay(ui.img, msg, x_overlay_offset=205, y_overlay_offset=140)
         ui.xdisp.publish(newMsg)
 
     ui.cam_sub = rospy.Subscriber(
