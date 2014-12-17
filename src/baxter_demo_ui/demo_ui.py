@@ -124,7 +124,8 @@ class BrrUi(object):
 
         self.img = Image.new('RGB', (1024, 600), 'white')
         self.active_window = self.windows['demo_1']
-        self.xdisp = rospy.Publisher('/robot/xdisplay', ImageMsg, latch=True)
+        self.xdisp = rospy.Publisher('/robot/xdisplay', ImageMsg,
+                                     latch=True, queue_size=1)
 
         self._status = RobotEnable()
 
@@ -148,17 +149,28 @@ class BrrUi(object):
         self._wheel_ok = True
 
         self.cameras = dict()
-        for cam in ['left_hand', 'right_hand', 'head']:
+        camera_list = ['left_hand', 'right_hand', 'head']
+        for idx, cam in enumerate(camera_list):
             try:
                 self.cameras[cam] = CameraController('%s_camera' % cam)
             except AttributeError:
-                self.windows['cam_submenu'].set_btn_selectable('cam_%s' % cam,
+                try:
+                    # This camera might not be powered
+                    # Turn off the power to the last camera
+                    # this will turn power on to the current camera
+                    CameraController('%s_camera' % camera_list[idx-1]).close()
+                    # And try again to locate the camera service
+                    self.cameras[cam] = CameraController('%s_camera' % cam)
+                except AttributeError:
+                    # This camera is unavailable (might be broken)
+                    # Disable camera button in the UI
+                    self.windows['cam_submenu'].set_btn_selectable('cam_%s' % cam,
                                                                False)
-                sel = self.windows['cam_submenu'].selected_btn()
-                bad_cam = self.windows['cam_submenu'].get_btn('cam_%s' % cam)
-                if (sel == bad_cam and
-                    not self.windows['cam_submenu'].scroll(1)):
-                    self.windows['cam_submenu'].selected_btn_index = 0
+                    sel = self.windows['cam_submenu'].selected_btn()
+                    bad_cam = self.windows['cam_submenu'].get_btn('cam_%s' % cam)
+                    if (sel == bad_cam and
+                          not self.windows['cam_submenu'].scroll(1)):
+                        self.windows['cam_submenu'].selected_btn_index = 0
 
         self.cam_sub = None
 

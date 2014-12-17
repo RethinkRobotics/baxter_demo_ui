@@ -76,13 +76,16 @@ def cam_head(ui, side):
 
 def camera_disp(ui, cam_side):
     def _display(camera, name):
-        for cam in ui.cameras:
-            ui.cameras[cam].close()
+        other_cameras = [cam for cam in ui.cameras if name != cam]
+        if other_cameras:
+            ui.cameras[other_cameras.pop()].close()
         camera.resolution = (640, 400)
         camera.open()
 
     def _cam_to_screen(msg):
-        newMsg = overlay(ui.img, msg, (1024, 600), (205, 140, 640, 400))
+        newMsg = overlay(ui.img, msg,
+                         x_overlay_offset=205,
+                         y_overlay_offset=140)
         ui.xdisp.publish(newMsg)
 
     ui.cam_sub = rospy.Subscriber(
@@ -91,7 +94,7 @@ def camera_disp(ui, cam_side):
         _cam_to_screen)
 
     camera = ui.cameras[cam_side]
-    _display(camera, '%s_camera' % cam_side)
+    _display(camera, cam_side)
 
 
 def springs(ui, side):
@@ -125,16 +128,19 @@ def play(ui, side):
         'robot/limb/right/follow_joint_trajectory',
         FollowJointTrajectoryAction,
     )
-    while True:
-        proc1 = RosProcess('rosrun baxter_interface '
-                           'joint_trajectory_action_server.py -m velocity &')
-        proc1.run()
+    proc1 = RosProcess('rosrun baxter_interface '
+                       'joint_trajectory_action_server.py -m velocity &')
+    proc1.run()
+    server_online = False
+    while not rospy.is_shutdown():
         rospy.sleep(1)
         if (left_client.wait_for_server(rospy.Duration(1.0)) and
             right_client.wait_for_server(rospy.Duration(1.0))):
+            server_online = True
             break
-    proc2 = RosProcess('rosrun baxter_examples '
-                       'joint_trajectory_file_playback.py -f recording')
+    if server_online:
+        proc2 = RosProcess('rosrun baxter_examples '
+                           'joint_trajectory_file_playback.py -f recording')
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
