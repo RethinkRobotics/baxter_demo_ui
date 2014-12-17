@@ -128,16 +128,19 @@ def play(ui, side):
         'robot/limb/right/follow_joint_trajectory',
         FollowJointTrajectoryAction,
     )
-    while True:
-        proc1 = RosProcess('rosrun baxter_interface '
-                           'joint_trajectory_action_server.py -m velocity &')
-        proc1.run()
+    proc1 = RosProcess('rosrun baxter_interface '
+                       'joint_trajectory_action_server.py -m velocity &')
+    proc1.run()
+    server_online = False
+    while not rospy.is_shutdown():
         rospy.sleep(1)
         if (left_client.wait_for_server(rospy.Duration(1.0)) and
             right_client.wait_for_server(rospy.Duration(1.0))):
+            server_online = True
             break
-    proc2 = RosProcess('rosrun baxter_examples '
-                       'joint_trajectory_file_playback.py -f recording')
+    if server_online:
+        proc2 = RosProcess('rosrun baxter_examples '
+                           'joint_trajectory_file_playback.py -f recording')
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
