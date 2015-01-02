@@ -1,4 +1,4 @@
-1.1.0 (2014-1-2)
+1.1.0 (2015-1-2)
 ---------------------------------
 - Updated baxter_demo_ui to ROS Indigo
 - Indigo robot required a reworking of how cameras power **on** / **off** - Three cameras can no longer be powered at the same time, and closing cameras turns power **off** to the specified camera and **on** to the other two
