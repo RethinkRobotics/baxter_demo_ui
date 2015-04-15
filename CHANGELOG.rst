@@ -1,3 +1,7 @@
+1.1.1 (2015-4-15)
+---------------------------------
+- Fixed gripper playback synchronization issue with arm movement (baxter_examples/joint_trajectory_file_playback.py)
+
 1.1.0 (2015-1-2)
 ---------------------------------
 - Updated baxter_demo_ui to ROS Indigo
