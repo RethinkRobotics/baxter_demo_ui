@@ -1,3 +1,12 @@
+1.1.1 (2015-5-15)
+---------------------------------
+- Added Torso Navigators to control UI in demo mode
+For recorded trajectory playback:
+- Fixed gripper playback synchronization issue with arm movement (baxter_examples/joint_trajectory_file_playback.py)
+- Slowed down arm movement to initial position (baxter_examples/joint_trajectory_file_playback.py)
+- Prevented trajectory stopping before completion
+ 
+
 1.1.0 (2015-1-2)
 ---------------------------------
 - Updated baxter_demo_ui to ROS Indigo
