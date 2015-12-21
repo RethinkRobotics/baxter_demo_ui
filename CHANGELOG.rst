@@ -1,3 +1,7 @@
+1.2.0 (2015-12-21)
+---------------------------------
+- No Change other than version bumps
+
 1.1.1 (2015-5-15)
 ---------------------------------
 - Added Torso Navigators to control UI in demo mode
